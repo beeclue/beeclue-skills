@@ -262,6 +262,71 @@ Every theme footer must include this exact line:
 </span>
 ```
 
+### 6.3 Secure AJAX Architecture & CSRF Nonce Protection
+All custom AJAX endpoints (cart drawer updates, add-to-cart, quantity changes, item removal) MUST implement WordPress nonce protection and input sanitization to prevent Cross-Site Request Forgery (CSRF) and injection attacks:
+
+1. **Localization with Nonce Generation (`functions.php`)**:
+```php
+function beeclue_enqueue_scripts() {
+    wp_enqueue_script('beeclue-cart-drawer', get_template_directory_uri() . '/assets/js/cart-drawer.js', ['jquery'], '2.0.0', true);
+
+    wp_localize_script('beeclue-cart-drawer', 'beeclue_ajax', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('beeclue_cart_nonce'),
+    ]);
+}
+add_action('wp_enqueue_scripts', 'beeclue_enqueue_scripts');
+```
+
+2. **Frontend Request Dispatch (`assets/js/cart-drawer.js`)**:
+Pass the localized `beeclue_ajax.nonce` in the payload:
+```javascript
+async function updateCartItem(cartItemKey, quantity) {
+    const formData = new FormData();
+    formData.append('action', 'beeclue_update_cart_quantity');
+    formData.append('nonce', beeclue_ajax.nonce);
+    formData.append('cart_item_key', cartItemKey);
+    formData.append('quantity', quantity);
+
+    const response = await fetch(beeclue_ajax.ajax_url, {
+        method: 'POST',
+        body: formData,
+    });
+    return await response.json();
+}
+```
+
+3. **Server-Side Verification & Sanitization (`functions.php`)**:
+The first line of every `wp_ajax_*` and `wp_ajax_nopriv_*` handler must verify the nonce with `check_ajax_referer()`, and sanitize all `$_POST` variables with `absint()` and `sanitize_text_field()`:
+```php
+function beeclue_ajax_update_cart_quantity() {
+    // 1. Verify CSRF nonce on the first line
+    check_ajax_referer('beeclue_cart_nonce', 'nonce');
+
+    // 2. Strict input sanitization
+    $cart_item_key = isset($_POST['cart_item_key']) ? sanitize_text_field(wp_unslash($_POST['cart_item_key'])) : '';
+    $quantity      = isset($_POST['quantity']) ? absint($_POST['quantity']) : 0;
+
+    if (empty($cart_item_key)) {
+        wp_send_json_error(['message' => __('Invalid cart item.', 'beeclue')]);
+    }
+
+    if ($quantity === 0) {
+        WC()->cart->remove_cart_item($cart_item_key);
+    } else {
+        WC()->cart->set_quantity($cart_item_key, $quantity);
+    }
+
+    wp_send_json_success([
+        'subtotal'     => WC()->cart->get_cart_subtotal(),
+        'subtotal_raw' => WC()->cart->get_subtotal(),
+        'item_count'   => WC()->cart->get_cart_contents_count(),
+    ]);
+}
+add_action('wp_ajax_beeclue_update_cart_quantity', 'beeclue_ajax_update_cart_quantity');
+add_action('wp_ajax_nopriv_beeclue_update_cart_quantity', 'beeclue_ajax_update_cart_quantity');
+```
+
 ---
 
 ## 7. HIGH-CONVERTING E-COMMERCE ENGINEERING
@@ -402,6 +467,7 @@ wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="Co
 - [ ] Modular scaffolding used (`template-parts/header/`, `template-parts/product/`, `template-parts/cart/`, `template-parts/ui/`).
 - [ ] Floating single product sticky Add-to-Cart bar activates smoothly on scroll.
 - [ ] AJAX cart drawer updates quantities and removes items dynamically.
+- [ ] Every wp_ajax_* handler calls check_ajax_referer() before processing input.
 - [ ] Free shipping progress bar calculates remaining balance and triggers celebration state.
 - [ ] Keyboard focus trapped in modal overlays and dismissed via `Escape` key.
 - [ ] Assistive technologies alerted via `aria-live="polite"` region.

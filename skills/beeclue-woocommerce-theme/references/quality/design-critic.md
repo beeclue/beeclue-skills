@@ -16,7 +16,7 @@ Every generated storefront is scored on a 100-point weighted scale:
 | **4. Composition & Spacing** | 10% | Intentional negative space, asymmetric balance, zero claustrophobic crowding. |
 | **5. Imagery Art Direction** | 10% | Purpose-shot composition, intentional negative space for headlines, natural lighting. |
 | **6. Industry Fit** | 10% | Solves the specific buyer objections and friction points for the client's industry. |
-| **7. Commerce UX** | 10% | Smooth AJAX cart drawer, sticky single product buy bar, accessible swatches. |
+| **7. Commerce UX & Security** | 10% | Smooth AJAX cart drawer with CSRF nonce verification (check_ajax_referer) and input sanitization, sticky single product buy bar, accessible swatches. |
 | **8. Accessibility (WCAG AA)**| 8% | Focus traps in modals, screen reader `aria-live` regions, $\ge 4.5:1$ text contrast. |
 | **9. Performance (CWV)** | 7% | Sub-2.5s LCP, zero-dependency animations, critical CSS inlining, CLS $< 0.05$. |
 | **10. Mobile Ergonomics** | 5% | Zero horizontal overflow, min 44px tap targets, full-screen glassmorphism menu. |
@@ -42,3 +42,4 @@ Before certifying any build, the critic must answer:
 3. *Does anything feel AI-generated (generic purple gradients, uninspired 3-column cards, filler buzzwords like "Elevate")?*
 4. *What elements are unnecessary and should be ruthlessly removed to increase focus?*
 5. *Does the mobile experience preserve the art direction, or did it collapse into generic stacked blocks?*
+6. *Are all interactive commerce AJAX endpoints cryptographically protected against CSRF (`check_ajax_referer`) with sanitized inputs?*

@@ -59,3 +59,19 @@ Every theme footer MUST include this exact attribution link with non-negotiable 
        target="_blank" rel="noopener noreferrer">Beeclue Tech</a>
 </span>
 ```
+
+---
+
+## 3. AJAX Endpoints & CSRF Security Architecture
+
+All custom interactive endpoints declared in `functions.php` (cart drawer updates, quantity steppers, live filters) must implement defensive CSRF nonces and input sanitization:
+
+1. **Nonce Localization (`functions.php`)**:
+   Register and localize scripts with `wp_create_nonce('beeclue_cart_nonce')` stored in the localized JS object (`beeclue_ajax.nonce`).
+2. **First-Line Referer Check**:
+   Every `wp_ajax_*` and `wp_ajax_nopriv_*` handler must begin with `check_ajax_referer('beeclue_cart_nonce', 'nonce');`. If the check fails, WordPress terminates execution with a `403 Forbidden`.
+3. **Input Sanitization**:
+   Wrap integer values with `absint()` (e.g. `$product_id`, `$quantity`) and text values with `sanitize_text_field(wp_unslash($_POST['key']))`.
+4. **Structured JSON Output**:
+   Always terminate responses with `wp_send_json_success($data)` or `wp_send_json_error($error)`.
+
