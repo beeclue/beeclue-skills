@@ -1,175 +1,120 @@
-# BeeClue Skills V2 — Commerce Design Intelligence
+# BeeClue Skills
 
-A production-grade, multi-industry, brand-aware **Creative + Commerce Design System** by **Beeclue Tech**. Built to generate distinctive, high-converting, accessible (WCAG 2.1 AA), and blazing fast WooCommerce digital flagships.
+> An open-source collection of production-grade AI agent skills and engineering workflows developed by **[Beeclue Tech](https://beeclue.com/?utm_source=skills_repo&utm_medium=readme&utm_campaign=open_source)**. Built for Claude Code, Gemini CLI, Cursor, and Antigravity.
 
+---
+
+## Quick Install
+
+Install any skill directly into your AI coding assistant using the official Skills CLI:
+
+```bash
+# Interactive selection:
+npx skills add beeclue/beeclue-skills
+
+# Direct install of a specific skill:
+npx skills add beeclue/beeclue-skills --skill beeclue-woocommerce-theme
 ```
-                  ┌─────────────────────────────────────────────────────────┐
-                  │   beeclue-woocommerce-theme (Master Orchestrator)       │
-                  │   25-Step Commerce Design Intelligence Pipeline         │
-                  └───────────────────────────┬─────────────────────────────┘
-                                              │
-         ┌───────────────────┬────────────────┼─────────────────┬───────────────────┐
-         ▼                   ▼                ▼                 ▼                   ▼
-    Brand Layer     Intelligence Layer   Design Layer     Commerce Layer      Quality Layer
-   (DNA Vectors,    (30+ Industries,    (15+ Archetypes,  (Friction Model,    (Visual Loop,
-    Voice, Tone)     Customer Mindset)   5-Layer Tokens)   Drawer, PDP Sticky) Design Critic)
+
+### Manual Installation
+
+You can also copy or symlink any skill directory directly into your assistant's skill directory:
+
+```bash
+# For Gemini CLI / Antigravity:
+cp -r skills/<skill-name> ~/.gemini/config/skills/
+
+# For Claude Code:
+cp -r skills/<skill-name> ~/.claude/skills/
 ```
 
 ---
 
-## 1. What Makes V2 Different
+## Skills Catalog
 
-Most AI theme generators produce the same website repeatedly: white background, 3-column card grid, generic purple gradient, and cliché phrases like *"Elevate your experience"*.
+Every skill in this repository is completely self-contained within its own directory under `skills/`, complete with its own dedicated `README.md`, `SKILL.md`, modular references, and evaluation benchmarks.
 
-BeeClue Skills V2 introduces a rigorous **Commerce Design Intelligence Pipeline**:
-1. **Quantitative Brand DNA**: Encodes every brand into a normalized 0–100 coordinate vector across Positioning, Personality, Visual Tone, and Motion.
-2. **Machine-Readable Design Contract**: Emits an unambiguous YAML contract before any template code is written.
-3. **Multi-Industry Knowledge**: Deep domain blueprints across 30+ industries (Fine Jewelry, Skincare, Automotive, Furniture, Industrial B2B, Boutique Hotels, Gourmet Food, SaaS).
-4. **15+ Composable Archetypes**: Directional aesthetic systems (Quiet Luxury, Editorial Luxury, Architectural Minimal, Technical Premium, Neo-Industrial, Clinical Premium, etc.).
-5. **5-Layer Token Architecture**: Seamlessly connects strategy to styling (Brand DNA $\rightarrow$ Primitives $\rightarrow$ Semantics $\rightarrow$ Components $\rightarrow$ Experience Tokens).
-6. **Independent Design Critic**: An objective evaluation engine scoring builds on an 11-vector, 100-point rubric (<70 Reject to 95+ Exceptional).
+| Skill | Category | Description | Status | Documentation |
+| :--- | :--- | :--- | :--- | :--- |
+| **[`beeclue-woocommerce-theme`](./skills/beeclue-woocommerce-theme)** | E-Commerce / WordPress | **Commerce Design Intelligence System (V2)**. Transforms client briefs into distinctive, high-converting, WCAG 2.1 AA, $15k+ luxury & premium WooCommerce flagships across 30+ industries. Features 0–100 Brand DNA vectors, YAML design contracts, 5-layer tokens, dynamic AJAX cart drawer, sticky PDP CTA bar, and an independent 100-point Design Critic. | **Active (v2.0)** | [View Guide](./skills/beeclue-woocommerce-theme/README.md) |
+
+### Upcoming Skills on the Roadmap
+
+- **`beeclue-site-audit`**: Deep performance, accessibility, SEO, and security audits for WordPress and modern web applications.
+- **`beeclue-seo-traffic-master`**: Technical SEO, structured data (JSON-LD), Core Web Vitals optimization, and semantic content cluster strategy.
+- **`beeclue-wordpress-hardening`**: Enterprise security hardening, REST API lockdown, rate limiting, and zero-trust configuration for high-traffic WordPress deployments.
 
 ---
 
-## 2. Directory Hierarchy
+## Repository Structure
 
-The entire V2 system is self-contained within `skills/beeclue-woocommerce-theme/`, allowing single-folder installation without polluting your agent's global skill registry:
+This repository operates as a monorepo for BeeClue AI skills:
 
 ```
 beeclue-skills/
-├── README.md
+├── README.md                      # Catalog hub & ecosystem overview (this file)
 ├── .gitignore
-├── eval/                                         # Evaluation suites & diversity tests
-│   ├── scenarios/
-│   │   ├── luxury-jewelry.md
-│   │   ├── premium-skincare.md
-│   │   ├── automotive.md
-│   │   └── b2b-industrial.md
-│   └── cross-industry-diversity-test.md
-│
-├── docs/                                         # Architecture & tool specifications
-│   └── mcp-specifications/
-│       ├── beeclue-design-mcp.md
-│       ├── beeclue-commerce-mcp.md
-│       └── beeclue-visual-mcp.md
-│
-├── scripts/
-│   └── validate-skills.py                       # Automated verification & linting suite
-│
-└── skills/
-    └── beeclue-woocommerce-theme/
-        ├── SKILL.md                              # Master Orchestrator (25-step execution pipeline)
-        └── references/
-            ├── brand/
-            │   ├── brand-strategy.md             # Brand DNA 0–100 quantitative model
-            │   ├── positioning.md                # Luxury vs Premium vs Accessible axes
-            │   └── voice.md                      # Restrained editorial tone & anti-buzzword codex
-            │
-            ├── intelligence/
-            │   ├── industries/                   # Deep domain profiles (Jewelry, Skincare, Automotive, etc.)
-            │   ├── customer-behavior.md          # Purchase psychology & information requirements
-            │   └── competitive-intelligence.md   # Competitor analysis & market differentiation
-            │
-            ├── design/
-            │   ├── archetypes-library.md         # 15+ design archetypes & composable mixtures
-            │   ├── luxury-definition.md          # Beyond black & gold: restraint, typography, whitespace
-            │   ├── superclass-tokens.md          # 5-layer token template (strict CSS unit formatting)
-            │   ├── typography.md                 # Fluid clamp scaling & authentic Google Font pairings
-            │   ├── color-systems.md              # 60-30-10 palette architecture & WCAG contrast
-            │   ├── layout-grids.md               # Asymmetric editorial splits & responsive grids
-            │   ├── image-direction.md            # Structured photo briefs (lighting, crop, mood)
-            │   ├── motion-personality.md         # Brand-aware motion & prefers-reduced-motion
-            │   └── anti-generic-linter.md        # Linter against AI design clichés
-            │
-            ├── commerce/
-            │   ├── strategy.md                   # Conditional feature enablement (shipping, urgency)
-            │   ├── ecommerce-ux-patterns.md      # PDP sticky bar, AJAX drawer, variant swatches
-            │   ├── product-discovery.md          # Faceted filtering, search overlays, card ergonomics
-            │   └── cart-checkout.md              # Dynamic free shipping meter & in-drawer cross-sells
-            │
-            ├── wordpress/
-            │   ├── wp-architecture.md            # Decision tree: Core vs Theme vs Blocks vs Plugins
-            │   ├── theme-engineering.md          # Modular template-parts/ & functions.php architecture
-            │   └── woocommerce-api.md            # WP-CLI automation & modern WooCommerce Store API
-            │
-            ├── quality/
-            │   ├── visual-qa.md                  # Inspection loop (render, screenshot, patch)
-            │   ├── a11y-wcag.md                  # WCAG 2.1 AA focus traps & screen-reader live regions
-            │   ├── performance-cwv.md            # 90+ Core Web Vitals & critical CSS inlining
-            │   ├── seo-schema.md                 # Complete JSON-LD (WebSite, Org, Product, FAQPage)
-            │   └── design-critic.md              # 100-point rubric (<70 reject to 95+ exceptional)
-            │
-            ├── content/
-            │   ├── brand-copy.md                 # Editorial copy rules & component microcopy
-            │   └── content-strategy.md           # 7-chapter homepage narrative hierarchy
-            │
-            └── examples/
-                └── lumiere-reasoning.md          # Case study in design reasoning (not a template)
+├── scripts/                       # Maintainer & CI validation utilities
+│   └── validate-skills.py         # Automated verification suite (5/5 checks)
+└── skills/                        # Autonomous skill packages
+    └── beeclue-woocommerce-theme/ # 100% self-contained skill package
+        ├── SKILL.md               # Master agent prompt & 25-step execution pipeline
+        ├── README.md              # Skill documentation, triggers, and usage guide
+        ├── docs/                  # Architecture & MCP tool specifications
+        │   └── mcp-specifications/
+        ├── eval/                  # Multi-industry evaluation scenarios & benchmarks
+        │   ├── scenarios/
+        │   └── cross-industry-diversity-test.md
+        └── references/            # Deep domain knowledge (38 modular reference files)
+            ├── brand/             # Brand DNA, Positioning, Voice
+            ├── intelligence/      # Customer psychology, competitive research & 10 industry profiles
+            ├── design/            # 15+ archetypes, 5-layer tokens, typography, grids
+            ├── commerce/          # Feature strategy, product discovery, cart drawer
+            ├── wordpress/         # Theme architecture, templates, WooCommerce Store API
+            ├── quality/           # Visual QA, WCAG 2.1 AA, CWV, Design Critic rubric
+            ├── content/           # Editorial copywriting & 7-chapter homepage narrative
+            └── examples/          # Case study in design reasoning
 ```
 
----
-
-## 3. The 25-Step Pipeline Overview
-
-When invoked, the skill runs an autonomous 4-stage pipeline:
-
-1. **Discovery & Intelligence**: Identifies industry dynamics, customer purchase friction, and competitive white space.
-2. **Strategy & Architecture**: Computes 0–100 Brand DNA vectors, outputs the YAML Design Contract, and generates 5-layer design tokens.
-3. **Technical Implementation**: Scaffolds modular `template-parts/`, authors the single-product sticky CTA bar, accessible variant swatches, dynamic AJAX cart drawer with free shipping calculation, and inlines critical CSS.
-4. **Quality & Critic Gates**: Runs the Anti-Generic Linter, verifies WCAG 2.1 AA compliance, and submits the build to the Independent Design Critic.
+### Why Skills Are Fully Self-Contained
+When a developer installs a skill using `npx skills add beeclue/beeclue-skills`, the CLI only copies the specified directory (e.g. `skills/beeclue-woocommerce-theme/`). By placing all relevant `docs/`, `eval/`, and `references/` inside each skill's folder:
+1. **Zero Broken References**: The installed skill retains full access to its internal evaluation scenarios, tool specs, and domain blueprints.
+2. **Zero Bloat**: The consumer's local environment never receives root-level CI scripts or unrelated files.
+3. **Multi-Skill Scalability**: New skills can be added under `skills/<skill-name>/` with their own independent versioning and documentation without affecting existing skills.
 
 ---
 
-## 4. Brand DNA & Design Contract Example
+## Validation & Quality Assurance
 
-```yaml
-brand_dna:
-  positioning:
-    luxury: 85
-    premium: 90
-    accessible: 20
-  personality:
-    sophistication: 90
-    minimalism: 85
-    warmth: 80
-  visual:
-    editorial: 85
-    artisanal: 90
-  motion:
-    elegance: 95
-    intensity: 30
-```
-
----
-
-## 5. Automated Verification & Testing
-
-The repository includes an automated test runner validating frontmatter, reference paths, strict CSS unit formatting, and link integrity:
+Maintainers can run the built-in validation suite across all skills:
 
 ```bash
 python3 scripts/validate-skills.py
 ```
 
+This verifies:
+1. YAML frontmatter validity (`name`, `description`, and metadata).
+2. All modular reference files exist and contain content.
+3. Strict CSS token formatting (detects formatting errors like `2.5 rem`).
+4. Integrity of all evaluation scenarios and MCP tool specifications.
+5. Internal markdown link resolution across all documentation.
+
 ---
 
-## 6. Installation & Usage
+## Agency Attribution
 
-To equip Claude Code, Gemini CLI, or any Antigravity-compatible agent with BeeClue Commerce Design Intelligence:
+Every commercial theme generated by BeeClue skills includes the mandatory Beeclue Tech attribution in `footer.php`:
 
-```bash
-# Clone or copy into your agent's skills directory
-cp -r skills/beeclue-woocommerce-theme ~/.gemini/config/skills/
+```html
+<span>Website Designed &amp; Developed by
+    <a href="https://beeclue.com/?utm_source=client_site&amp;utm_medium=footer&amp;utm_campaign=web_design"
+       target="_blank" rel="noopener noreferrer">Beeclue Tech</a>
+</span>
 ```
 
-### Trigger Phrases:
-- `"create woocommerce theme"`
-- `"superclass theme"`
-- `"build wordpress store"`
-- `"beeclue theme"`
-- `"commerce design intelligence"`
-- `"luxury woocommerce"`
-- `"new client site"`
-
 ---
 
-Website Designed & Developed by [Beeclue Tech](https://beeclue.com/?utm_source=skills_repo&utm_medium=readme&utm_campaign=open_source).
+## License & Credits
+
+Developed and maintained with pride by **[Beeclue Tech](https://beeclue.com/?utm_source=skills_repo&utm_medium=readme&utm_campaign=open_source)**.
+Licensed under the [MIT License](LICENSE) (or repository default).

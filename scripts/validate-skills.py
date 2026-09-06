@@ -14,10 +14,11 @@ import re
 import sys
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-SKILL_MD = os.path.join(REPO_ROOT, "skills", "beeclue-woocommerce-theme", "SKILL.md")
-REFERENCES_DIR = os.path.join(REPO_ROOT, "skills", "beeclue-woocommerce-theme", "references")
-EVAL_DIR = os.path.join(REPO_ROOT, "eval")
-DOCS_DIR = os.path.join(REPO_ROOT, "docs")
+SKILL_DIR = os.path.join(REPO_ROOT, "skills", "beeclue-woocommerce-theme")
+SKILL_MD = os.path.join(SKILL_DIR, "SKILL.md")
+REFERENCES_DIR = os.path.join(SKILL_DIR, "references")
+EVAL_DIR = os.path.join(SKILL_DIR, "eval")
+DOCS_DIR = os.path.join(SKILL_DIR, "docs")
 
 def test_skill_frontmatter():
     print("[TEST 1/5] Validating SKILL.md frontmatter...")
