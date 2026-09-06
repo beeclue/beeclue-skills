@@ -24,7 +24,6 @@ def validate_woocommerce_theme():
     skill_md = os.path.join(skill_dir, "SKILL.md")
     references_dir = os.path.join(skill_dir, "references")
     eval_dir = os.path.join(skill_dir, "eval")
-    docs_dir = os.path.join(skill_dir, "docs")
 
     try:
         # 1. Frontmatter
@@ -81,8 +80,8 @@ def validate_woocommerce_theme():
             assert not matches, f"Found invalid CSS token syntax with spaces in CSS block: {matches}"
         print("  ✓ Strict CSS unit formatting validated.")
 
-        # 4. Evals & MCP
-        print("[TEST 4/5] Validating Evaluation Scenarios and MCP Specifications...")
+        # 4. Evals
+        print("[TEST 4/5] Validating Evaluation Scenarios...")
         eval_files = [
             "scenarios/luxury-jewelry.md", "scenarios/premium-skincare.md",
             "scenarios/automotive.md", "scenarios/b2b-industrial.md",
@@ -90,10 +89,7 @@ def validate_woocommerce_theme():
         ]
         for ef in eval_files:
             assert os.path.isfile(os.path.join(eval_dir, ef))
-        mcp_files = ["beeclue-design-mcp.md", "beeclue-commerce-mcp.md", "beeclue-visual-mcp.md"]
-        for mf in mcp_files:
-            assert os.path.isfile(os.path.join(docs_dir, "mcp-specifications", mf))
-        print(f"  ✓ All {len(eval_files)} evaluation scenarios and {len(mcp_files)} MCP specs validated.")
+        print(f"  ✓ All {len(eval_files)} evaluation scenarios validated.")
 
         # 5. Relative markdown links
         print("[TEST 5/5] Auditing relative markdown links in SKILL.md...")

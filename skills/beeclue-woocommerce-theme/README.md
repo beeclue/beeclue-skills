@@ -49,11 +49,6 @@ beeclue-woocommerce-theme/
 │   │   ├── automotive.md
 │   │   └── b2b-industrial.md
 │   └── cross-industry-diversity-test.md
-├── docs/                             # Tool specifications & MCP interfaces
-│   └── mcp-specifications/
-│       ├── beeclue-design-mcp.md
-│       ├── beeclue-commerce-mcp.md
-│       └── beeclue-visual-mcp.md
 └── references/
     ├── brand/                        # Brand DNA, Positioning, Voice
     ├── intelligence/                 # Customer psychology, competitive analysis & 10 industry profiles
