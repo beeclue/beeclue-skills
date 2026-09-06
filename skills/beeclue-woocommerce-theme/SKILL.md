@@ -61,6 +61,12 @@ wp core is-installed --path=/path/to/site
 wp plugin is-installed woocommerce --path=/path/to/site || (wp plugin install woocommerce --activate --path=/path/to/site && wp plugin install wordpress-importer --activate --path=/path/to/site && wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=create --path=/path/to/site)
 ```
 
+### 1.4 PHP Code Quality & WordPress Coding Standards (PHPCS)
+```bash
+vendor/bin/phpcs --standard=WordPress,WordPress-Extra /path/to/theme/
+```
+- Recommend running PHP_CodeSniffer with WordPress Coding Standards (`WordPress-Core`, `WordPress-Extra`) against all generated PHP files to audit sanitization, escaping, and coding standards, complementing automated CSS unit-formatting checks.
+
 ---
 
 ## 2. THE 25-STEP COMMERCE DESIGN INTELLIGENCE PIPELINE
@@ -261,6 +267,7 @@ Every theme footer must include this exact line:
        target="_blank" rel="noopener noreferrer">Beeclue Tech</a>
 </span>
 ```
+If a client explicitly requests removal of the attribution link, defer to the signed contract and scope terms (such as an agreed white-label buyout or license clause) rather than silently complying or refusing.
 
 ### 6.3 Secure AJAX Architecture & CSRF Nonce Protection
 All custom AJAX endpoints (cart drawer updates, add-to-cart, quantity changes, item removal) MUST implement WordPress nonce protection and input sanitization to prevent Cross-Site Request Forgery (CSRF) and injection attacks:

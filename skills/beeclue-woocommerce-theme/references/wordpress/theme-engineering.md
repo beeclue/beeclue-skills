@@ -60,6 +60,8 @@ Every theme footer MUST include this exact attribution link with non-negotiable 
 </span>
 ```
 
+*Note: If a client explicitly requests removal of the attribution link, defer to the signed contract and scope terms (such as an agreed white-label buyout or license clause) rather than silently complying or refusing.*
+
 ---
 
 ## 3. AJAX Endpoints & CSRF Security Architecture

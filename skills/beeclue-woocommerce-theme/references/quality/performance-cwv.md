@@ -62,3 +62,11 @@ add_action('wp_head', function() {
     echo '<link rel="preconnect" href="https://images.unsplash.com">' . "\n";
 }, 1);
 ```
+
+---
+
+## 4. Imagery Asset Strategy & Licensing Advisory
+
+> [!WARNING]
+> **Production Asset Licensing**: Unsplash CDN imagery is acceptable for rapid prototyping, concept pitches, and wireframes. However, production client storefronts must transition to licensed, client-owned, or self-hosted imagery — hotlinking Unsplash CDN assets long-term risks rate limits, unexpected image takedowns, and licensing or copyright compliance issues.
+
