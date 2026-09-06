@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Traffic Master Report — Beeclue Tech</title>
+    <style>
+        :root {
+            --bc-primary: #004d99;
+            --bc-primary-dark: #003d7a;
+            --bc-primary-light: #e6f0ff;
+            --bc-primary-rgb: 0, 77, 153;
+            --bc-success: #10B981;
+            --bc-success-light: #D1FAE5;
+            --bc-warning: #F59E0B;
+            --bc-warning-light: #FEF3C7;
+            --bc-danger: #EF4444;
+            --bc-danger-light: #FEE2E2;
+            --bc-info: #3B82F6;
+            --bc-info-light: #DBEAFE;
+            --bc-bg: #F8FAFC;
+            --bc-surface: #FFFFFF;
+            --bc-border: #E2E8F0;
+            --bc-text: #1E293B;
+            --bc-text-muted: #64748B;
+            --bc-text-light: #94A3B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bc-bg);
+            color: var(--bc-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Cover Section */
+        .cover {
+            background: linear-gradient(135deg, var(--bc-primary) 0%, var(--bc-primary-dark) 100%);
+            color: white;
+            padding: 48px 32px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .cover-logo {
+            margin-bottom: 24px;
+        }
+
+        .cover-logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .cover h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .cover .domain {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        }
+
+        .cover .date {
+            font-size: 0.875rem;
+            opacity: 0.75;
+            margin-bottom: 24px;
+        }
+
+        .cover .branding {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 24px;
+        }
+
+        .cover .branding a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .cover .branding a:hover {
+            text-decoration: underline;
+        }
+
+        /* Overall Score */
+        .overall-score {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            border: 6px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Score Grid */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .score-card {
+            background: var(--bc-surface);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--bc-primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .score-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .score-card.critical { border-left-color: var(--bc-danger); }
+        .score-card.warning { border-left-color: var(--bc-warning); }
+        .score-card.success { border-left-color: var(--bc-success); }
+        .score-card.info { border-left-color: var(--bc-info); }
+
+        .score-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--bc-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .score-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--bc-text);
+        }
+
+        .score-card .change {
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        .score-card .change.positive { color: var(--bc-success); }
+        .score-card .change.negative { color: var(--bc-danger); }
+
+        /* Section */
+        .section {
+            background: var(--bc-surface);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--bc-border);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .section-icon.blue { background: var(--bc-primary-light); color: var(--bc-primary); }
+        .section-icon.green { background: var(--bc-success-light); color: var(--bc-success); }
+        .section-icon.yellow { background: var(--bc-warning-light); color: var(--bc-warning); }
+        .section-icon.red { background: var(--bc-danger-light); color: var(--bc-danger); }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--bc-text);
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem;
+            color: var(--bc-text-muted);
+        }
+
+        /* Issue Card */
+        .issue-card {
+            background: var(--bc-surface);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--bc-border);
+            transition: border-color 0.2s;
+        }
+
+        .issue-card:hover {
+            border-color: var(--bc-primary);
+        }
+
+        .issue-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .issue-title {
+            font-weight: 600;
+            color: var(--bc-text);
+            font-size: 0.9375rem;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .priority.p0 { background: var(--bc-danger-light); color: #DC2626; }
+        .priority.p1 { background: var(--bc-warning-light); color: #D97706; }
+        .priority.p2 { background: var(--bc-info-light); color: var(--bc-info); }
+        .priority.p3 { background: #F1F5F9; color: var(--bc-text-muted); }
+
+        .issue-description {
+            font-size: 0.875rem;
+            color: var(--bc-text-muted);
+            margin-bottom: 12px;
+        }
+
+        .issue-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--bc-text-light);
+        }
+
+        .issue-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--bc-border);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--bc-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--bc-primary-dark);
+        }
+
+        .btn-success {
+            background: var(--bc-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--bc-text-muted);
+            border: 1px solid var(--bc-border);
+        }
+
+        .btn-outline:hover {
+            background: var(--bc-bg);
+            border-color: var(--bc-text-muted);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: var(--bc-border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.excellent { background: var(--bc-success); }
+        .progress-fill.good { background: #34D399; }
+        .progress-fill.average { background: var(--bc-warning); }
+        .progress-fill.poor { background: var(--bc-danger); }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--bc-bg);
+            color: var(--bc-text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--bc-border);
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--bc-border);
+            color: var(--bc-text);
+        }
+
+        .data-table tr:hover td {
+            background: var(--bc-bg);
+        }
+
+        .data-table .number {
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.6875rem;
+            font-weight: 500;
+        }
+
+        .badge-success { background: var(--bc-success-light); color: #059669; }
+        .badge-warning { background: var(--bc-warning-light); color: #D97706; }
+        .badge-danger { background: var(--bc-danger-light); color: #DC2626; }
+        .badge-info { background: var(--bc-info-light); color: var(--bc-info); }
+
+        /* Code Block */
+        .code-block {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.8125rem;
+            overflow-x: auto;
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+
+        .code-block .comment { color: #94A3B8; }
+        .code-block .keyword { color: #93C5FD; }
+        .code-block .string { color: #86EFAC; }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border: 1px solid var(--bc-border);
+        }
+
+        .comparison-table th {
+            background: var(--bc-bg);
+            font-weight: 600;
+            color: var(--bc-text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .comparison-table .your-site {
+            background: var(--bc-primary-light);
+            font-weight: 600;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--bc-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist .check-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .checklist .check-icon.pass { background: var(--bc-success-light); color: var(--bc-success); }
+        .checklist .check-icon.fail { background: var(--bc-danger-light); color: var(--bc-danger); }
+        .checklist .check-icon.warn { background: var(--bc-warning-light); color: var(--bc-warning); }
+
+        /* Flex Utilities */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-8 { gap: 8px; }
+        .gap-12 { gap: 12px; }
+        .gap-16 { gap: 16px; }
+        .mb-8 { margin-bottom: 8px; }
+        .mb-12 { margin-bottom: 12px; }
+        .mb-16 { margin-bottom: 16px; }
+        .mb-24 { margin-bottom: 24px; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-muted { color: var(--bc-text-muted); }
+        .font-semibold { font-weight: 600; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--bc-border);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--bc-text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--bc-text);
+        }
+
+        .tab.active {
+            color: var(--bc-primary);
+            border-bottom-color: var(--bc-primary);
+        }
+
+        /* Footer */
+        .report-footer {
+            text-align: center;
+            padding: 32px 24px;
+            color: var(--bc-text-muted);
+            font-size: 0.8125rem;
+        }
+
+        .report-footer .branding {
+            font-weight: 600;
+            color: var(--bc-primary);
+        }
+
+        .report-footer a {
+            color: var(--bc-primary);
+            text-decoration: none;
+        }
+
+        .report-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .report-footer .logo {
+            margin-bottom: 12px;
+        }
+
+        .report-footer .logo img {
+            height: 28px;
+            width: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .report-container {
+                padding: 16px;
+            }
+
+            .cover {
+                padding: 32px 20px;
+            }
+
+            .cover h1 {
+                font-size: 1.75rem;
+            }
+
+            .score-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .issue-header {
+                flex-direction: column;
+            }
+
+            .issue-meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .issue-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cover h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .cover {
+                background: var(--bc-primary) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .btn {
+                display: none;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+
+        <!-- COVER SECTION -->
+        <div class="cover">
+            <div class="cover-logo">
+                <img src="https://cdn.jsdelivr.net/gh/beeclue/clients@main/self/beeclue-horizontal-white.png" alt="Beeclue Tech" height="40">
+            </div>
+            <h1>SEO Traffic Master Report</h1>
+            <div class="domain">{{DOMAIN}}</div>
+            <div class="date">Generated on {{DATE}}</div>
+            <div class="overall-score">
+                <div class="score-circle">
+                    {{SCORE}}
+                    <span class="score-label">/ 100</span>
+                </div>
+            </div>
+            <div class="branding">Generated by <a href="https://beeclue.com/?utm_source=seo_report&utm_medium=report_footer&utm_campaign=seo_traffic_master" target="_blank" rel="noopener noreferrer">Beeclue Tech</a></div>
+        </div>
+
+        <!-- EXECUTIVE SUMMARY -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">📊</div>
+                <div>
+                    <div class="section-title">Executive Summary</div>
+                    <div class="section-subtitle">Key findings and recommendations</div>
+                </div>
+            </div>
+
+            <div class="score-grid">
+                <div class="score-card {{IMPRESSIONS_CLASS}}">
+                    <div class="label">Total Impressions</div>
+                    <div class="value">{{TOTAL_IMPRESSIONS}}</div>
+                    <div class="change {{IMPRESSIONS_CHANGE_CLASS}}">{{IMPRESSIONS_CHANGE}}</div>
+                </div>
+                <div class="score-card {{CLICKS_CLASS}}">
+                    <div class="label">Total Clicks</div>
+                    <div class="value">{{TOTAL_CLICKS}}</div>
+                    <div class="change {{CLICKS_CHANGE_CLASS}}">{{CLICKS_CHANGE}}</div>
+                </div>
+                <div class="score-card {{CTR_CLASS}}">
+                    <div class="label">Average CTR</div>
+                    <div class="value">{{AVG_CTR}}</div>
+                    <div class="change {{CTR_CHANGE_CLASS}}">{{CTR_CHANGE}}</div>
+                </div>
+                <div class="score-card {{POSITION_CLASS}}">
+                    <div class="label">Average Position</div>
+                    <div class="value">{{AVG_POSITION}}</div>
+                    <div class="change {{POSITION_CHANGE_CLASS}}">{{POSITION_CHANGE}}</div>
+                </div>
+            </div>
+
+            <!-- Top 3 Critical Issues -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Top 3 Critical Issues</h3>
+            {{CRITICAL_ISSUES}}
+        </div>
+
+        <!-- GSC ANALYSIS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">🔍</div>
+                <div>
+                    <div class="section-title">Google Search Console Analysis</div>
+                    <div class="section-subtitle">Performance data from Google Search</div>
+                </div>
+            </div>
+
+            <!-- Device Breakdown -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Device Performance</h3>
+            <table class="data-table mb-24">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Clicks</th>
+                        <th>Impressions</th>
+                        <th>CTR</th>
+                        <th>Avg. Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{DEVICE_TABLE_ROWS}}
+                </tbody>
+            </table>
+
+            <!-- Top Pages -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Top Performing Pages</h3>
+            <table class="data-table mb-24">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>Clicks</th>
+                        <th>Impressions</th>
+                        <th>CTR</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{TOP_PAGES_TABLE_ROWS}}
+                </tbody>
+            </table>
+
+            <!-- Underperforming Pages -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Underperforming Pages (High Impressions, Low CTR)</h3>
+            {{UNDERPERFORMING_PAGES}}
+        </div>
+
+        <!-- TECHNICAL SEO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon green">⚙️</div>
+                <div>
+                    <div class="section-title">Technical SEO Audit</div>
+                    <div class="section-subtitle">Crawlability, Core Web Vitals, and on-page factors</div>
+                </div>
+            </div>
+
+            <!-- Core Web Vitals -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Core Web Vitals</h3>
+            <div class="score-grid mb-24">
+                <div class="score-card {{LCP_CLASS}}">
+                    <div class="label">LCP</div>
+                    <div class="value">{{LCP}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{LCP_BAR}}" style="width: {{LCP_PCT}}%"></div></div>
+                    <div class="text-xs text-muted">Target: ≤2.5s</div>
+                </div>
+                <div class="score-card {{INP_CLASS}}">
+                    <div class="label">INP</div>
+                    <div class="value">{{INP}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{INP_BAR}}" style="width: {{INP_PCT}}%"></div></div>
+                    <div class="text-xs text-muted">Target: ≤200ms</div>
+                </div>
+                <div class="score-card {{CLS_CLASS}}">
+                    <div class="label">CLS</div>
+                    <div class="value">{{CLS}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{CLS_BAR}}" style="width: {{CLS_PCT}}%"></div></div>
+                    <div class="text-xs text-muted">Target: ≤0.1</div>
+                </div>
+                <div class="score-card {{FCP_CLASS}}">
+                    <div class="label">FCP</div>
+                    <div class="value">{{FCP}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{FCP_BAR}}" style="width: {{FCP_PCT}}%"></div></div>
+                    <div class="text-xs text-muted">Target: ≤1.8s</div>
+                </div>
+            </div>
+
+            <!-- Technical Issues -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Technical Issues Found</h3>
+            {{TECHNICAL_ISSUES}}
+
+            <!-- On-Page SEO Issues -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px; margin-top: 24px;">On-Page SEO Issues</h3>
+            {{ONPAGE_ISSUES}}
+        </div>
+
+        <!-- PAGESPEED INSIGHTS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon yellow">⚡</div>
+                <div>
+                    <div class="section-title">PageSpeed Insights</div>
+                    <div class="section-subtitle">Performance scores and optimization opportunities</div>
+                </div>
+            </div>
+
+            <div class="score-grid mb-24">
+                <div class="score-card {{PS_PERF_CLASS}}">
+                    <div class="label">Performance</div>
+                    <div class="value">{{PS_PERF_SCORE}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{PS_PERF_BAR}}" style="width: {{PS_PERF_SCORE}}%"></div></div>
+                </div>
+                <div class="score-card {{PS_A11Y_CLASS}}">
+                    <div class="label">Accessibility</div>
+                    <div class="value">{{PS_A11Y_SCORE}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{PS_A11Y_BAR}}" style="width: {{PS_A11Y_SCORE}}%"></div></div>
+                </div>
+                <div class="score-card {{PS_BP_CLASS}}">
+                    <div class="label">Best Practices</div>
+                    <div class="value">{{PS_BP_SCORE}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{PS_BP_BAR}}" style="width: {{PS_BP_SCORE}}%"></div></div>
+                </div>
+                <div class="score-card {{PS_SEO_CLASS}}">
+                    <div class="label">SEO</div>
+                    <div class="value">{{PS_SEO_SCORE}}</div>
+                    <div class="progress-bar"><div class="progress-fill {{PS_SEO_BAR}}" style="width: {{PS_SEO_SCORE}}%"></div></div>
+                </div>
+            </div>
+
+            <!-- PageSpeed Opportunities -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Optimization Opportunities</h3>
+            {{PAGESPEED_OPPORTUNITIES}}
+        </div>
+
+        <!-- SCHEMA VALIDATION -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon green">📋</div>
+                <div>
+                    <div class="section-title">Schema Validation</div>
+                    <div class="section-subtitle">Structured data completeness and accuracy</div>
+                </div>
+            </div>
+
+            {{SCHEMA_CHECKLIST}}
+        </div>
+
+        <!-- BROKEN LINKS & REDIRECTS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon red">🔗</div>
+                <div>
+                    <div class="section-title">Broken Links & Redirects</div>
+                    <div class="section-subtitle">404 errors, redirect chains, and link health</div>
+                </div>
+            </div>
+
+            {{BROKEN_LINKS_TABLE}}
+        </div>
+
+        <!-- IMAGE OPTIMIZATION -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">🖼️</div>
+                <div>
+                    <div class="section-title">Image Optimization</div>
+                    <div class="section-subtitle">Format, sizing, lazy loading, and alt text</div>
+                </div>
+            </div>
+
+            {{IMAGE_CHECKLIST}}
+        </div>
+
+        <!-- VIDEO SEO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon yellow">🎬</div>
+                <div>
+                    <div class="section-title">Video SEO</div>
+                    <div class="section-subtitle">Video schema, thumbnails, and transcripts</div>
+                </div>
+            </div>
+
+            {{VIDEO_CHECKLIST}}
+        </div>
+
+        <!-- LOCAL SEO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon green">📍</div>
+                <div>
+                    <div class="section-title">Local SEO</div>
+                    <div class="section-subtitle">Google Business Profile, NAP consistency, local schema</div>
+                </div>
+            </div>
+
+            {{LOCAL_SEO_CHECKLIST}}
+        </div>
+
+        <!-- ECOMMERCE CHECKS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">🛒</div>
+                <div>
+                    <div class="section-title">Ecommerce SEO</div>
+                    <div class="section-subtitle">Product schema, descriptions, and navigation</div>
+                </div>
+            </div>
+
+            {{ECOMMERCE_CHECKLIST}}
+        </div>
+
+        <!-- AI SEARCH VISIBILITY -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon yellow">🤖</div>
+                <div>
+                    <div class="section-title">AI Search Visibility</div>
+                    <div class="section-subtitle">How your site performs in AI-powered search (SGE, Perplexity, Bing Chat)</div>
+                </div>
+            </div>
+
+            <div class="score-grid mb-24">
+                <div class="score-card {{AI_SCORE_CLASS}}">
+                    <div class="label">AI Readiness Score</div>
+                    <div class="value">{{AI_SCORE}}/10</div>
+                    <div class="progress-bar"><div class="progress-fill {{AI_SCORE_BAR}}" style="width: {{AI_SCORE_PCT}}%"></div></div>
+                </div>
+                <div class="score-card {{SCHEMA_CLASS}}">
+                    <div class="label">Schema Coverage</div>
+                    <div class="value">{{SCHEMA_COVERAGE}}</div>
+                </div>
+                <div class="score-card {{AUTHOR_CLASS}}">
+                    <div class="label">Author Signals</div>
+                    <div class="value">{{AUTHOR_SIGNALS}}</div>
+                </div>
+                <div class="score-card {{CITATION_CLASS}}">
+                    <div class="label">Citation Ready</div>
+                    <div class="value">{{CITATION_READY}}</div>
+                </div>
+            </div>
+
+            <!-- AI Recommendations -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">AI Search Optimization Recommendations</h3>
+            {{AI_RECOMMENDATIONS}}
+        </div>
+
+        <!-- COMPETITOR ANALYSIS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon red">🎯</div>
+                <div>
+                    <div class="section-title">Competitor Gap Analysis</div>
+                    <div class="section-subtitle">How you compare to top competitors</div>
+                </div>
+            </div>
+
+            <table class="comparison-table mb-24">
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th class="your-site">Your Site</th>
+                        <th>{{COMPETITOR_1}}</th>
+                        <th>{{COMPETITOR_2}}</th>
+                        <th>{{COMPETITOR_3}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{COMPETITOR_TABLE_ROWS}}
+                </tbody>
+            </table>
+
+            <!-- Content Gaps -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Content Gaps</h3>
+            {{CONTENT_GAPS}}
+        </div>
+
+        <!-- CONTENT INTELLIGENCE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">📝</div>
+                <div>
+                    <div class="section-title">Content Intelligence</div>
+                    <div class="section-subtitle">Content decay, cannibalization, and snippet opportunities</div>
+                </div>
+            </div>
+
+            <!-- Content Decay -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Content Decay Alerts</h3>
+            {{CONTENT_DECAY}}
+
+            <!-- Cannibalization -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px; margin-top: 24px;">Keyword Cannibalization</h3>
+            {{CANNIBALIZATION}}
+
+            <!-- Featured Snippets -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px; margin-top: 24px;">Featured Snippet Opportunities</h3>
+            {{FEATURED_SNIPPETS}}
+        </div>
+
+        <!-- BACKLINK PROFILE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon green">🔗</div>
+                <div>
+                    <div class="section-title">Backlink Profile</div>
+                    <div class="section-subtitle">Domain authority and link quality assessment</div>
+                </div>
+            </div>
+
+            <div class="score-grid mb-24">
+                <div class="score-card">
+                    <div class="label">Total Backlinks</div>
+                    <div class="value">{{TOTAL_BACKLINKS}}</div>
+                </div>
+                <div class="score-card">
+                    <div class="label">Referring Domains</div>
+                    <div class="value">{{REFERRING_DOMAINS}}</div>
+                </div>
+                <div class="score-card {{DA_CLASS}}">
+                    <div class="label">Domain Authority</div>
+                    <div class="value">{{DOMAIN_AUTHORITY}}</div>
+                </div>
+                <div class="score-card {{TOXIC_CLASS}}">
+                    <div class="label">Toxic Backlinks</div>
+                    <div class="value">{{TOXIC_BACKLINKS}}</div>
+                </div>
+            </div>
+
+            <!-- Link Quality Assessment -->
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Link Quality Assessment</h3>
+            {{LINK_QUALITY}}
+        </div>
+
+        <!-- E-E-A-T ASSESSMENT -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon yellow">🛡️</div>
+                <div>
+                    <div class="section-title">E-E-A-T & Trust Signals</div>
+                    <div class="section-subtitle">Experience, Expertise, Authoritativeness, Trustworthiness</div>
+                </div>
+            </div>
+
+            {{EEAT_CHECKLIST}}
+        </div>
+
+        <!-- INTERNATIONAL SEO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">🌍</div>
+                <div>
+                    <div class="section-title">International SEO</div>
+                    <div class="section-subtitle">Hreflang, language targeting, and multi-country optimization</div>
+                </div>
+            </div>
+
+            {{INTERNATIONAL_CHECKLIST}}
+        </div>
+
+        <!-- ACTION PLAN -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon green">✅</div>
+                <div>
+                    <div class="section-title">Action Plan</div>
+                    <div class="section-subtitle">Prioritized fixes with estimated impact</div>
+                </div>
+            </div>
+
+            {{ACTION_PLAN}}
+
+            <!-- Interactive Fix Buttons -->
+            <div style="margin-top: 24px; padding: 16px; background: var(--bc-bg); border-radius: 8px;">
+                <h3 style="font-size: 1rem; margin-bottom: 12px;">Apply Fixes</h3>
+                <p class="text-sm text-muted mb-16">Click "Apply Fix" to automatically fix the issue. You'll be asked to confirm before any changes are made.</p>
+                {{FIX_BUTTONS}}
+            </div>
+        </div>
+
+        <!-- RE-AUDIT REMINDER -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon blue">📅</div>
+                <div>
+                    <div class="section-title">Scheduled Re-Audit</div>
+                    <div class="section-subtitle">Recommended follow-up schedule</div>
+                </div>
+            </div>
+
+            <div class="score-grid mb-24">
+                <div class="score-card">
+                    <div class="label">Next Quick Check</div>
+                    <div class="value" style="font-size: 1rem;">{{NEXT_QUICK_CHECK}}</div>
+                </div>
+                <div class="score-card">
+                    <div class="label">Next Full Audit</div>
+                    <div class="value" style="font-size: 1rem;">{{NEXT_FULL_AUDIT}}</div>
+                </div>
+                <div class="score-card">
+                    <div class="label">After Major Changes</div>
+                    <div class="value" style="font-size: 1rem;">Immediately</div>
+                </div>
+                <div class="score-card">
+                    <div class="label">Monthly Check</div>
+                    <div class="value" style="font-size: 1rem;">1st of Month</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="report-footer">
+            <div class="logo">
+                <img src="https://cdn.jsdelivr.net/gh/beeclue/clients@main/self/beeclue-horizontal-blue.png" alt="Beeclue Tech" height="28">
+            </div>
+            <p class="mb-8">Report generated by <span class="branding">Beeclue Tech</span></p>
+            <p class="text-xs text-muted">
+                <a href="https://beeclue.com/?utm_source=seo_report&utm_medium=report_footer&utm_campaign=seo_traffic_master" target="_blank" rel="noopener noreferrer">beeclue.com</a>
+                · {{TIMESTAMP}}
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // Simple interactivity for fix buttons
+        document.querySelectorAll('.fix-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.dataset.action;
+                const issueId = this.dataset.issue;
+
+                if (action === 'apply') {
+                    if (confirm('Apply this fix? This will modify your website files.')) {
+                        // Emit event for the skill to handle
+                        window.dispatchEvent(new CustomEvent('seo-fix-apply', {
+                            detail: { issueId: issueId }
+                        }));
+                        this.textContent = '✓ Applied';
+                        this.disabled = true;
+                        this.style.opacity = '0.6';
+                    }
+                } else if (action === 'skip') {
+                    this.closest('.issue-card').style.opacity = '0.5';
+                    this.textContent = 'Skipped';
+                    this.disabled = true;
+                }
+            });
+        });
+
+        // Smooth scroll to sections
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
