@@ -27,3 +27,36 @@ When testing system outputs across multiple industries:
 1. **Layout Topology**: Verify that the section sequencing differs (e.g. B2B uses CAD & data tables; Skincare uses clinical regimen steps).
 2. **Component Customization**: Verify that single product pages adapt (e.g. Jewelry removes urgency; Automotive adds garage selector).
 3. **Typography & Density**: Verify that spacing variables (`--section-spacing`, `--grid-gap-desktop`) and typography scales reflect the industry profile.
+
+---
+
+## 3. Automated Evaluation Suite (`scripts/run-eval.py`)
+
+Do not rely on model self-grading. Execute the automated evaluation suite to parse scenario verification criteria, lint theme assets against the Anti-Generic Linter (`references/design/anti-generic-linter.md`), and report objective pass/fail results.
+
+### 3.1 Inspect Scenarios & Verification Criteria
+```bash
+# List all registered scenarios and extracted verification checklists
+python3 scripts/run-eval.py --list
+```
+
+### 3.2 Audit Theme Stylesheet Against Scenarios
+```bash
+# Audit a generated theme's style.css across all scenarios
+python3 scripts/run-eval.py --css wp-content/themes/beeclue-vespera-theme/style.css
+
+# Audit against a specific scenario (e.g. Haute Jewelry)
+python3 scripts/run-eval.py --scenario luxury-jewelry --css wp-content/themes/beeclue-vespera-theme/style.css
+```
+
+### 3.3 Full Theme Directory Audit
+```bash
+# Audits CSS, PHP templates, and JavaScript files for banned tokens, gradients, and filler copy
+python3 scripts/run-eval.py --scenario b2b-industrial --theme-dir wp-content/themes/beeclue-precision-theme/
+```
+
+### 3.4 Internal Suite Self-Test
+```bash
+# Validates scenario parser and anti-generic detection fixtures
+python3 scripts/run-eval.py --test
+```
