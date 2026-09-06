@@ -1,5 +1,11 @@
 # Reference: Lumière Theme Implementation
 
+> [!IMPORTANT]
+> **Lumière is a study in Design Reasoning, NOT a reusable visual template.**
+> Do NOT copy Lumière's terracotta color, Cormorant Garamond font, or warm cream backgrounds for other stores unless the client's Brand DNA independently demands it.
+> Learn the **thought process** that created Lumière:
+> Brand Characteristics → Design Decisions → Technical Implementation.
+
 This document captures a real-world example of the skill in action. The "Lumière" theme was built for a premium lifestyle & home goods WooCommerce store. Use this as a reference for design quality expectations.
 
 ## Brand Brief
