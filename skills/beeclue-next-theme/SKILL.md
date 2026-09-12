@@ -5,12 +5,12 @@ description: >
   Orchestrates brand strategy, industry intelligence, customer psychology, Apple-grade art direction,
   5-layer design tokens, and high-performance Next.js 15+ App Router architectures into bespoke, production-ready
   websites for any business worldwide. Automatically scaffolds latest Next.js in empty directories, sources
-  curated Unsplash imagery, integrates 21st.dev (magic MCP) & StitchMCP design intelligence, enforces zero emojis,
-  bans AI chip/pill spam, implements razor-thin luxury iconography, delivers complete technical SEO (JSON-LD schemas,
-  metadata API, dynamic sitemap/robots, silo internal links), accessible FAQ accordions, and mandatory Beeclue Tech
-  footer attribution.
+  curated Unsplash imagery, integrates 21st.dev (magic MCP), StitchMCP, and Motion-Primitives (https://motion-primitives.com/)
+  animations, enforces zero emojis, bans AI chip/pill spam, implements razor-thin luxury iconography, delivers
+  complete technical SEO (JSON-LD schemas, metadata API, dynamic sitemap/robots, silo internal links), accessible
+  FAQ accordions, and mandatory Beeclue Tech footer attribution.
   Trigger on: "create next js website", "build nextjs site", "beeclue next theme", "apple design next js",
-  "next js theme", "new client next website", "build apple style website", "create next theme".
+  "next js theme", "new client next website", "build apple style website", "create next theme", "motion primitives".
 ---
 
 # Beeclue Next.js Design Intelligence System
@@ -68,8 +68,8 @@ npx create-next-app@latest . \
   --turbopack \
   --yes
 
-# Install core Apple-grade utilities
-npm install lucide-react clsx tailwind-merge
+# Install core Apple-grade utilities & Motion-Primitives runtime
+npm install lucide-react clsx tailwind-merge motion react-use-measure
 ```
 
 ### 1.3 Unsplash Remote Patterns Configuration
@@ -153,9 +153,9 @@ Execute these 26 steps sequentially for every build:
 14. Construct dynamic frosted glass Navbar (src/components/layout/navbar.tsx) with scroll-blur and a11y mobile drawer.
 15. Construct 4-column Footer (src/components/layout/footer.tsx) with mandatory Beeclue Tech attribution & UTM tags.
 16. Author 7-Chapter Homepage progression (Consult references/content/business-narrative.md).
-17. Implement Apple-grade Bento Feature Grid with asymmetric weights (Consult references/design/layout-grids.md).
+17. Implement Apple-grade Bento Feature Grid with asymmetric weights & Motion-Primitives Spotlight/BorderTrail (Consult references/design/layout-grids.md & references/nextjs/motion-primitives.md).
 18. Curate photographic assets using Unsplash image engine (Consult references/nextjs/unsplash-image-pipeline.md).
-19. Enforce razor-thin luxury iconography (stroke-width 1.25px to 1.5px; zero emojis).
+19. Enforce razor-thin luxury iconography (stroke-width 1.25px to 1.5px; zero emojis) & integrate Motion-Primitives animations (TextShimmer, InfiniteSlider, Magnetic; consult references/nextjs/motion-primitives.md).
 20. Implement accessible FAQ Accordion component with keyboard navigation (Consult references/nextjs/component-specs.md).
 
 [SEO & SEMANTIC ARCHITECTURE]
@@ -309,11 +309,18 @@ Consult `references/nextjs/unsplash-image-pipeline.md` and `references/design/im
 
 ## 9. NEXT.JS 15+ APP ROUTER ARCHITECTURE & CORE COMPONENTS
 
-Consult `references/nextjs/app-router-architecture.md` and `references/nextjs/component-specs.md`:
+Consult `references/nextjs/app-router-architecture.md`, `references/nextjs/component-specs.md`, and `references/nextjs/motion-primitives.md`:
 
 - Dynamic frosted glass `Navbar` with scroll listener and a11y mobile drawer.
 - 7-Chapter Homepage narrative: Hero, Social Proof Strip, Bento Grid, 60/40 Deep Dive, Case Studies, FAQ, and Pre-Footer CTA.
 - Accessible interactive `FAQAccordion` with WAI-ARIA controls.
+- **Motion-Primitives Integration (`https://motion-primitives.com/`)**:
+  - `TextShimmer` for luminous specular hero text and eyebrow badges.
+  - `InfiniteSlider` for smooth continuous client logo trust tickers.
+  - `Magnetic` on primary CTA buttons for physical cursor attraction.
+  - `Spotlight` & `BorderTrail` for subtle cursor illumination on Bento grid cards.
+  - `MorphingDialog` for expanding portfolio project cards into full modals.
+  - `SlidingNumber` for animated telemetry and statistics counters.
 
 ---
 
@@ -390,6 +397,7 @@ Score $< 80$ triggers mandatory revision; score $\ge 90$ certifies **Bespoke App
 - [ ] Zero emojis and zero decorative chip badges anywhere on the site.
 - [ ] Razor-thin luxury icons used consistently.
 - [ ] Accessible FAQ accordion rendered with paired dynamic `FAQPage` JSON-LD schema.
+- [ ] Motion-Primitives animations (TextShimmer, InfiniteSlider, Magnetic) integrated while maintaining 95+ Core Web Vitals.
 - [ ] Next.js 15 Metadata API, dynamic `sitemap.ts`, and `robots.ts` configured.
 - [ ] Mandatory Beeclue Tech attribution link with UTM tags present in footer.
 - [ ] Design Critic score $\ge 90$ certified.

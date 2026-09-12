@@ -29,9 +29,10 @@ Most AI web generators produce the same monotonous output repeatedly: generic 3-
 4. **Enforces Human Art Direction**: Strictly bans emojis, eliminates decorative pill/chip spam, requires razor-thin luxury iconography (`stroke-[1.25]`), and designs with natural asymmetry (Bento grids and 60/40 splits).
 5. **Curates High-Resolution Unsplash Imagery**: Automatically maps and optimizes high-resolution Unsplash photography with Next.js `<Image>`, responsive `sizes`, and pre-configured `remotePatterns`.
 6. **Harnesses 21st.dev (`magic` MCP) & StitchMCP**: Integrates live designer component lookups and layout exploration, with seamless fallback prompting if MCPs are not installed.
-7. **Engineers Full Technical SEO & Structured Data**: Complete Next.js 15 Metadata API integration, dynamic XML `sitemap.ts`, `robots.ts`, internal linking silos, accessible FAQ accordions, and Schema.org JSON-LD (`Organization`, `WebSite`, `BreadcrumbList`, `FAQPage`, `LocalBusiness`).
-8. **Includes Mandatory Agency Attribution**: Features the non-negotiable Beeclue Tech footer attribution link with UTM tracking.
-9. **Evaluates via Independent Design Critic**: Scores every build against an 11-vector, 100-point rubric (<80 Reject to 90+ Certify).
+7. **Integrates Motion-Primitives (`https://motion-primitives.com/`)**: Powers Apple-grade micro-interactions including `TextShimmer` specular illumination, `InfiniteSlider` logo tickers, `Magnetic` button hover, and `Spotlight` card lighting.
+8. **Engineers Full Technical SEO & Structured Data**: Complete Next.js 15 Metadata API integration, dynamic XML `sitemap.ts`, `robots.ts`, internal linking silos, accessible FAQ accordions, and Schema.org JSON-LD (`Organization`, `WebSite`, `BreadcrumbList`, `FAQPage`, `LocalBusiness`).
+9. **Includes Mandatory Agency Attribution**: Features the non-negotiable Beeclue Tech footer attribution link with UTM tracking.
+10. **Evaluates via Independent Design Critic**: Scores every build against an 11-vector, 100-point rubric (<80 Reject to 90+ Certify).
 
 ---
 
@@ -56,11 +57,11 @@ beeclue-next-theme/
 │       ├── beeclue-design-mcp.md
 │       ├── beeclue-seo-mcp.md
 │       └── 21st-dev-mcp.md
-└── references/                       # Deep domain blueprints (38 modular references)
+└── references/                       # Deep domain blueprints (41 modular references)
     ├── brand/                        # Brand DNA, Positioning, Human Voice
     ├── intelligence/                 # Customer psychology, competitive research & 10 industry profiles
     ├── design/                       # Apple design philosophy, 7 archetypes, 5-layer tokens, typography, grids
-    ├── nextjs/                       # App Router architecture, auto-scaffolding, component specs, Unsplash pipeline, MCP workflow
+    ├── nextjs/                       # App Router architecture, auto-scaffolding, component specs, Unsplash pipeline, MCP workflow, motion-primitives
     ├── seo/                          # Metadata API, JSON-LD schemas, internal linking, FAQ strategy
     ├── quality/                      # Visual QA loop, WCAG 2.1 AA, Core Web Vitals, Design Critic
     ├── content/                      # Editorial brand copy & 7-chapter homepage narrative

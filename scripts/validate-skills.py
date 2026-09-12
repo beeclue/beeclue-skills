@@ -150,7 +150,7 @@ def validate_next_theme():
         "design/typography.md", "design/color-systems.md", "design/layout-grids.md",
         "design/motion-personality.md", "design/anti-generic-linter.md", "design/image-direction.md",
         "nextjs/app-router-architecture.md", "nextjs/scaffolding-automation.md", "nextjs/component-specs.md",
-        "nextjs/unsplash-image-pipeline.md", "nextjs/mcp-design-workflow.md",
+        "nextjs/unsplash-image-pipeline.md", "nextjs/mcp-design-workflow.md", "nextjs/motion-primitives.md",
         "seo/metadata-architecture.md", "seo/jsonld-schemas.md", "seo/internal-linking.md",
         "seo/faq-strategy.md",
         "quality/visual-qa.md", "quality/a11y-wcag.md", "quality/performance-cwv.md",

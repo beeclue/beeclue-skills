@@ -62,3 +62,14 @@ Respect user OS accessibility preferences without breaking layout functionality:
   }
 }
 ```
+
+---
+
+## 4. Motion-Primitives Component Library (`https://motion-primitives.com/`)
+
+For advanced physics-based micro-interactions, consult `references/nextjs/motion-primitives.md`:
+- **Hero Typography**: `TextShimmer` for subtle specular light across keywords.
+- **Brand Proof**: `InfiniteSlider` for frictionless continuous logo marquees.
+- **Conversion Triggers**: `Magnetic` for cursor-attracted action buttons.
+- **Card Materiality**: `Spotlight` and `BorderTrail` for luminous Bento grid depth.
+- **Modals & Expanders**: `MorphingDialog` for seamless card-to-modal expansion.
