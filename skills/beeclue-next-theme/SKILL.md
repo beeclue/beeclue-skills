@@ -29,7 +29,7 @@ You do NOT produce generic, one-size-fits-all AI templates. You execute a rigoro
 3. [Interactive Client Discovery Questionnaire](#3-interactive-client-discovery-questionnaire)
 4. [The 26-Step Next.js Design Intelligence Pipeline](#4-the-26-step-nextjs-design-intelligence-pipeline)
 5. [Brand DNA & Machine-Readable Design Contract](#5-brand-dna--machine-readable-design-contract)
-6. [Design Archetypes & Apple Design Philosophy](#6-design-archetypes--apple-design-philosophy)
+6. [Design Archetypes, UI Styles & Apple Design Philosophy](#6-design-archetypes-ui-styles--apple-design-philosophy)
 7. [5-Layer Token Architecture](#7-5-layer-token-architecture)
 8. [Curated Unsplash Image Engine](#8-curated-unsplash-image-engine)
 9. [Next.js 15+ App Router Architecture & Core Components](#9-nextjs-15-app-router-architecture--core-components)
@@ -122,6 +122,7 @@ Never start building with assumptions. Initiate an interactive discovery session
 4. **Brand Personality**: Which aesthetic register best reflects the brand (e.g. Cupertino Clean, Neo-Editorial, Swiss Precision, Cyber-Minimal, Warm Artisanal, Clinical Luxe)?
 5. **Key Architecture & Pages**: Which pages and chapters are required (Homepage, Services Silo, Case Studies, About, FAQ, Contact)?
 6. **Existing Assets**: Do you have existing brand colors, logos, or font preferences, or should Beeclue synthesize them?
+7. **UI Design Style (mandatory suggest-and-confirm)**: After Q1, look up `references/intelligence/industry-style-matrix.md` and present the Top 3 styles from `references/design/ui-styles-library.md` with one-line WHY each, then ask the user to pick 1 or name their own from the full 27. Example: *"Based on your [industry], I recommend (1) Minimalism — [reason], (2) Bento Grid — [reason], (3) Glassmorphism — [reason]. Which one should I lock in, or would you prefer a different style from the list?"* HALT all build steps until the user explicitly confirms a style. NEVER auto-apply your #1 pick.
 
 ---
 
@@ -139,8 +140,8 @@ Execute these 26 steps sequentially for every build:
 [MCP ENHANCEMENT & BRAND ARCHITECTURE]
 5. Verify 21st.dev / StitchMCP availability or confirm fallback with user (Consult references/nextjs/mcp-design-workflow.md).
 6. Synthesize quantitative Brand DNA (0–100 coordinate vector across 4 dimensions).
-7. Select primary Design Archetype (Consult references/design/archetypes-library.md).
-8. Emit machine-readable YAML Design Contract.
+7. Select primary Design Archetype + UI Style: consult archetypes-library.md AND ui-styles-library.md + industry-style-matrix.md, present Top 3 styles with rationale, and obtain explicit user confirmation (NEVER assume — no build without a confirmed `ui_style`).
+8. Emit machine-readable YAML Design Contract (must include confirmed `ui_style`).
 9. Compute 5-Layer Design Tokens (Consult references/design/superclass-tokens.md).
 
 [SCAFFOLDING & BASELINE CONFIGURATION]
@@ -210,6 +211,7 @@ design_contract:
     name: "Vanguard Studio"
     industry: "Architecture & Spatial Design"
     archetype: "Cupertino Clean + Neo-Editorial"
+    ui_style: "Editorial Design" # MUST be one of the 27 styles in references/design/ui-styles-library.md, explicitly confirmed by user in Step 7
   typography:
     display_font: "Geist Sans"
     editorial_font: "Cormorant Garamond"
@@ -231,9 +233,9 @@ design_contract:
 
 ---
 
-## 6. DESIGN ARCHETYPES & APPLE DESIGN PHILOSOPHY
+## 6. DESIGN ARCHETYPES, UI STYLES & APPLE DESIGN PHILOSOPHY
 
-Consult `references/design/apple-design-philosophy.md` and `references/design/archetypes-library.md`:
+Consult `references/design/apple-design-philosophy.md`, `references/design/archetypes-library.md`, `references/design/ui-styles-library.md`, and `references/intelligence/industry-style-matrix.md`:
 
 - **Cupertino Clean (Apple Minimal)**: Monochromatic slate, pure white surfaces, frosted glass headers, continuous squircle curves, single high-impact accent.
 - **Neo-Editorial Luxury**: Warm linen canvas, charcoal ink, serif display typography, asymmetrical magazine splits, sharp picture frames.
@@ -242,6 +244,14 @@ Consult `references/design/apple-design-philosophy.md` and `references/design/ar
 - **Warm Artisanal**: Cream bone, toasted amber, espresso brown, atmospheric full-bleed hero, tasting menus.
 - **Clinical Luxe**: Sterile porcelain, glacial blue accents, platinum card borders, doctor board credentials.
 - **Kinetic Creative**: Bold typography statements, interactive case study hover triggers, showreels.
+
+### 6.1 Popular UI Styles (27) + Industry Suggest-and-Confirm Protocol
+The full catalog lives in `references/design/ui-styles-library.md`: Glassmorphism, Neumorphism, Skeuomorphism, Flat Design, Material Design, Brutalism, Neo-Brutalism, Bento Grid, Minimalism, Maximalism, Y2K, Cyberpunk, Aurora/Mesh Gradient, Claymorphism, Liquid/Fluid UI, Retro/Vintage, Pixel Art, Editorial Design, Swiss/International, Organic/Natural UI, Hand-drawn/Doodle, Memphis Design, 3D/Immersive, Retro-Futurism, Dark Mode/OLED, Monochromatic, High-contrast accessibility-first.
+1. Detect industry from Q1 → look up Top 3 in `references/intelligence/industry-style-matrix.md`.
+2. Present Top 3 with one-line WHY each + offer the full 27 as alternatives.
+3. Ask the user to pick 1 explicitly. If the user names their own style, accept it without argument.
+4. Record the confirmed pick as `ui_style` in the Design Contract. If user defers ("you choose"), state your pick + reason and get a "yes" before proceeding.
+5. NEVER skip confirmation. NEVER build on an assumed style — an unconfirmed style is a pipeline blocker.
 
 ### Human Designer Mandates (Strict Anti-AI Rules)
 1. **Zero Emojis**: Never use emojis in headlines, body copy, bullets, or buttons.
@@ -390,7 +400,8 @@ Score $< 80$ triggers mandatory revision; score $\ge 90$ certifies **Bespoke App
 - [ ] Node.js verified and latest Next.js 15+ installed in empty directories.
 - [ ] 21st.dev (`magic` MCP) & StitchMCP verified or user fallback confirmed.
 - [ ] Interactive discovery questionnaire completed with client.
-- [ ] Quantitative Brand DNA (0–100) and YAML Design Contract emitted.
+- [ ] UI style explicitly confirmed by user (Top 3 suggested from industry-style-matrix, user pick recorded as `ui_style` — NEVER assumed).
+- [ ] Quantitative Brand DNA (0–100) and YAML Design Contract emitted (contract includes confirmed `ui_style`).
 - [ ] 5-layer CSS tokens declared in `globals.css` without invalid syntax spacing (e.g. `2.5rem`, `400ms`).
 - [ ] Frosted glass header blurs content smoothly on scroll.
 - [ ] Curated Unsplash images loaded via Next.js `<Image>` with priority on hero and responsive `sizes`.
