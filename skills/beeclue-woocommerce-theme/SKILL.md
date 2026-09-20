@@ -24,19 +24,20 @@ You do NOT produce generic, one-size-fits-all templates. You execute a rigorous 
 ## TABLE OF CONTENTS
 
 1. [Pre-Flight System Checks](#1-pre-flight-system-checks)
-2. [The 25-Step Commerce Design Intelligence Pipeline](#2-the-25-step-commerce-design-intelligence-pipeline)
-3. [Brand DNA & Machine-Readable Design Contract](#3-brand-dna--machine-readable-design-contract)
-4. [Design Archetypes & Visual Systems](#4-design-archetypes--visual-systems)
-5. [5-Layer Token Architecture](#5-5-layer-token-architecture)
-6. [Core Theme Architecture & Modular Scaffolding](#6-core-theme-architecture--modular-scaffolding)
-7. [High-Converting E-Commerce Engineering](#7-high-converting-e-commerce-engineering)
-   - 7.1 Single Product: Floating Sticky Add-to-Cart Bar
-   - 7.2 Visual Variant Swatches (Color & Size Pills)
-   - 7.3 High-Converting Product Card Grid
-   - 7.4 Dynamic AJAX Cart Drawer with Free Shipping Progress Bar
-8. [Quality Assurance, Anti-Generic Linter & Design Critic](#8-quality-assurance-anti-generic-linter--design-critic)
-9. [Automated WP-CLI Deployment](#9-automated-wp-cli-deployment)
-10. [Verification Checklist](#10-verification-checklist)
+2. [Mandatory Client Discovery: Industry & Color Theme Protocol](#2-mandatory-client-discovery-industry--color-theme-protocol)
+3. [The 26-Step Commerce Design Intelligence Pipeline](#3-the-26-step-commerce-design-intelligence-pipeline)
+4. [Brand DNA & Machine-Readable Design Contract](#4-brand-dna--machine-readable-design-contract)
+5. [Design Archetypes & Visual Systems](#5-design-archetypes--visual-systems)
+6. [5-Layer Token Architecture](#6-5-layer-token-architecture)
+7. [Core Theme Architecture & Modular Scaffolding](#7-core-theme-architecture--modular-scaffolding)
+8. [High-Converting E-Commerce Engineering](#8-high-converting-e-commerce-engineering)
+   - 8.1 Single Product: Floating Sticky Add-to-Cart Bar
+   - 8.2 Visual Variant Swatches (Color & Size Pills)
+   - 8.3 High-Converting Product Card Grid
+   - 8.4 Dynamic AJAX Cart Drawer with Free Shipping Progress Bar
+9. [Quality Assurance, Anti-Generic Linter & Design Critic](#9-quality-assurance-anti-generic-linter--design-critic)
+10. [Automated WP-CLI Deployment](#10-automated-wp-cli-deployment)
+11. [Verification Checklist](#11-verification-checklist)
 
 ---
 
@@ -69,17 +70,39 @@ vendor/bin/phpcs --standard=WordPress,WordPress-Extra /path/to/theme/
 
 ---
 
-## 2. THE 25-STEP COMMERCE DESIGN INTELLIGENCE PIPELINE
+## 2. MANDATORY CLIENT DISCOVERY: INDUSTRY & COLOR THEME PROTOCOL
 
-Execute these 25 steps in sequence for every store build:
+Never start authoring template files or computing design tokens with blind assumptions. You MUST enforce the following protocol:
+
+### 2.1 Missing Industry Protocol (Mandatory Halt & Prompt)
+If the client's brief did NOT specify their business industry or niche, you MUST HALT and prompt before proceeding:
+> *"To architect a bespoke digital flagship, what industry does your brand belong to? (e.g., Luxury Jewelry, Premium Skincare, High-End Furniture & Home, Fashion & Apparel, Consumer Electronics, Gourmet Food & Beverage, Automotive, SaaS & Tech, or Industrial B2B)?"*
+
+NEVER guess or assume an industry without explicit confirmation.
+
+### 2.2 Missing Color Theme Protocol (Mandatory Halt & Suggest-and-Confirm)
+If the user's prompt did NOT specify a color theme, palette, or hex codes, you MUST HALT and prompt:
+> *"Do you have existing brand colors or a preferred color theme? If not, based on your industry, I recommend one of these 3 curated palettes:*
+> *1. **[Palette Name 1]**: Canvas `#[HEX]`, Text `#[HEX]`, Accent `#[HEX]` — [One-line design rationale]*
+> *2. **[Palette Name 2]**: Canvas `#[HEX]`, Text `#[HEX]`, Accent `#[HEX]` — [One-line design rationale]*
+> *3. **[Palette Name 3]**: Canvas `#[HEX]`, Text `#[HEX]`, Accent `#[HEX]` — [One-line design rationale]*
+> *Which one should I lock in, or do you have custom hex codes / brand guidelines to use?"*
+
+Consult `references/design/color-systems.md` for industry-calibrated harmonies. NEVER proceed to token generation or scaffolding with an assumed palette.
+
+---
+
+## 3. THE 26-STEP COMMERCE DESIGN INTELLIGENCE PIPELINE
+
+Execute these 26 steps in sequence for every store build:
 
 ```
 [DISCOVERY & INTELLIGENCE]
-1. Inspect business & brand context (Name, products, price points, AOV tier)
-2. Identify industry (Consult references/intelligence/industries/)
+1. Execute client discovery: halt and confirm Industry and Color Theme if not provided by default
+2. Inspect business & brand context (Name, products, price points, AOV tier)
 3. Identify target audience & purchase psychology (Consult references/intelligence/customer-behavior.md)
 4. Identify business model (Direct-to-consumer, B2B wholesale, bespoke/made-to-order, subscription)
-5. Execute industry intelligence audit
+5. Execute industry intelligence audit (Consult references/intelligence/industries/)
 6. Execute customer intelligence audit (AOV friction, trust requirements)
 7. Execute competitive intelligence audit (Consult references/intelligence/competitive-intelligence.md)
 
@@ -106,11 +129,12 @@ Execute these 25 steps in sequence for every store build:
 23. Run Anti-Generic Design Linter (Check for purple gradients, card spam, filler buzzwords)
 24. Run Multi-Vector Quality Audits (Visual QA, UX QA, WCAG 2.1 AA a11y, Core Web Vitals performance)
 25. Submit build to Independent Design Critic (Score on 100-point rubric; iterate if score < 80)
+26. Certify production readiness (Score >= 90)
 ```
 
 ---
 
-## 3. BRAND DNA & MACHINE-READABLE DESIGN CONTRACT
+## 4. BRAND DNA & MACHINE-READABLE DESIGN CONTRACT
 
 ### 3.1 Quantitative Brand DNA Model (0–100 Scale)
 Every project begins by establishing the client's coordinate vector. See `references/brand/brand-strategy.md`:
@@ -182,7 +206,7 @@ design_contract:
 
 ---
 
-## 4. DESIGN ARCHETYPES & VISUAL SYSTEMS
+## 5. DESIGN ARCHETYPES & VISUAL SYSTEMS
 
 Do NOT default to generic templates. Match the client's Brand DNA to established design languages. Consult `references/design/archetypes-library.md`:
 
@@ -195,7 +219,7 @@ Do NOT default to generic templates. Match the client's Brand DNA to established
 
 ---
 
-## 5. 5-LAYER TOKEN ARCHITECTURE
+## 6. 5-LAYER TOKEN ARCHITECTURE
 
 All CSS Custom Properties must be declared across 5 distinct layers. Consult `references/design/superclass-tokens.md`:
 
@@ -243,7 +267,7 @@ All CSS Custom Properties must be declared across 5 distinct layers. Consult `re
 
 ---
 
-## 6. CORE THEME ARCHITECTURE & MODULAR SCAFFOLDING
+## 7. CORE THEME ARCHITECTURE & MODULAR SCAFFOLDING
 
 ### 6.1 Modular Directory Hierarchy
 Scaffold the theme cleanly inside `wp-content/themes/beeclue-{name}-theme/`:
@@ -336,9 +360,9 @@ add_action('wp_ajax_nopriv_beeclue_update_cart_quantity', 'beeclue_ajax_update_c
 
 ---
 
-## 7. HIGH-CONVERTING E-COMMERCE ENGINEERING
+## 8. HIGH-CONVERTING E-COMMERCE ENGINEERING
 
-### 7.1 Single Product Floating Sticky Add-to-Cart Bar
+### 8.1 Single Product Floating Sticky Add-to-Cart Bar
 On single product pages, when the user scrolls past the primary CTA, a sticky bar anchors to the bottom of the viewport maintaining conversion momentum. Consult `references/commerce/ecommerce-ux-patterns.md`:
 
 ```html
@@ -375,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-### 7.2 Visual Variant Swatches
+### 8.2 Visual Variant Swatches
 Replace default HTML `<select>` dropdowns with accessible color circles and pill buttons:
 ```html
 <div class="swatch-group" role="radiogroup" aria-label="Color">
@@ -384,7 +408,7 @@ Replace default HTML `<select>` dropdowns with accessible color circles and pill
 </div>
 ```
 
-### 7.3 Dynamic AJAX Cart Drawer with Free Shipping Progress Bar
+### 8.3 Dynamic AJAX Cart Drawer with Free Shipping Progress Bar
 Slides in smoothly from the right, traps keyboard focus, and calculates the remaining balance to unlock free shipping:
 
 ```javascript
@@ -411,35 +435,35 @@ function updateShippingMeter(subtotal, threshold = 75) {
 
 ---
 
-## 8. QUALITY ASSURANCE, ANTI-GENERIC LINTER & DESIGN CRITIC
+## 9. QUALITY ASSURANCE, ANTI-GENERIC LINTER & DESIGN CRITIC
 
-### 8.1 Anti-Generic Design Linter
+### 9.1 Anti-Generic Design Linter
 Before certifying, scan the build against the 12 AI clichés in `references/design/anti-generic-linter.md`:
 - No generic purple/indigo gradients (`#6366F1` to `#A855F7`).
 - No universal glassmorphism applied indiscriminately to standard content cards.
 - No "cards inside cards" claustrophobia.
 - No filler marketing buzzwords ("Elevate", "Discover Excellence").
 
-### 8.2 WCAG 2.1 AA Accessibility Gate
+### 9.2 WCAG 2.1 AA Accessibility Gate
 - Keyboard focus trapped in all active drawers/modals.
 - Screen reader live announcements (`#a11y-live-status` with `aria-live="polite"`).
 - Minimum `44x44px` interactive touch targets.
 - Text contrast $\ge 4.5:1$ for body and $\ge 3.0:1$ for headings.
 
-### 8.3 Core Web Vitals Performance Gate
+### 9.3 Core Web Vitals Performance Gate
 - Target: 90+ PageSpeed score.
 - Zero external animation libraries (pure CSS + lightweight `IntersectionObserver`).
 - Above-the-fold critical CSS inlined.
 - Preconnect to Google Fonts and Unsplash CDN.
 
-### 8.4 The Independent Design Critic (100-Point Rubric)
+### 9.4 The Independent Design Critic (100-Point Rubric)
 Every build is evaluated on the 11-vector rubric in `references/quality/design-critic.md`:
 - **Brand Fidelity (15%)**, **Visual Hierarchy (10%)**, **Typography (10%)**, **Composition (10%)**, **Imagery (10%)**, **Industry Fit (10%)**, **Commerce UX (10%)**, **Accessibility (8%)**, **Performance (7%)**, **Mobile (5%)**, **Originality (5%)**.
 - Score $< 80$ triggers mandatory iteration. Score $\ge 90$ certifies **Premium Production Quality**.
 
 ---
 
-## 9. AUTOMATED WP-CLI DEPLOYMENT
+## 10. AUTOMATED WP-CLI DEPLOYMENT
 
 ```bash
 # Activate generated theme
@@ -466,8 +490,9 @@ wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="Co
 
 ---
 
-## 10. VERIFICATION CHECKLIST
+## 11. VERIFICATION CHECKLIST
 
+- [ ] Industry and Color Theme explicitly confirmed by user before scaffolding (NEVER assumed).
 - [ ] Quantitative Brand DNA (0–100) established before writing code.
 - [ ] Machine-readable Design Contract emitted and respected by all templates.
 - [ ] 5-layer CSS tokens declared in `style.css` without invalid syntax spacing (e.g., `2.5rem`, `150ms`).

@@ -37,11 +37,12 @@ Every skill in this repository is completely self-contained within its own direc
 | Skill | Category | Description | Status | Documentation |
 | :--- | :--- | :--- | :--- | :--- |
 | **[`beeclue-next-theme`](./skills/beeclue-next-theme)** | Full-Stack Web / Next.js | **Next.js Design Intelligence System**. Generates bespoke, high-converting, Apple-designer-grade Next.js 15+ App Router websites for any business worldwide. Features automated scaffolding for empty directories, curated Unsplash imagery, 21st.dev (`magic` MCP), StitchMCP, and Motion-Primitives (`https://motion-primitives.com/`) animations, zero emojis, no AI chip spam, razor-thin luxury iconography, full technical SEO (JSON-LD, sitemaps, silo links), accessible FAQ accordions, and mandatory Beeclue Tech attribution. | **Active (v1.0)** | [View Guide](./skills/beeclue-next-theme/README.md) |
+| **[`beeclue-shopify-theme`](./skills/beeclue-shopify-theme)** | E-Commerce / Shopify OS 2.0 | **Shopify Commerce Design Intelligence System**. Generates bespoke, production-ready Shopify Online Store 2.0 (OS 2.0) themes from scratch. Scaffolds modular layouts, sections, snippets, and JSON templates, enforces WCAG 2.1 AA accessibility, 90+ Core Web Vitals, dynamic AJAX slide-out cart drawer with free shipping progress threshold, floating sticky PDP buy bar, accessible variant swatches, faceted collection filtering, and independent 100-point Design Critic scoring. | **Active (v1.0)** | [View Guide](./skills/beeclue-shopify-theme/README.md) |
 | **[`beeclue-woocommerce-theme`](./skills/beeclue-woocommerce-theme)** | E-Commerce / WordPress | **Commerce Design Intelligence System (V2)**. Transforms client briefs into distinctive, high-converting, WCAG 2.1 AA, $15k+ luxury & premium WooCommerce flagships across 30+ industries. Features 0–100 Brand DNA vectors, YAML design contracts, 5-layer tokens, dynamic AJAX cart drawer, sticky PDP CTA bar, and an independent 100-point Design Critic. | **Active (v2.0)** | [View Guide](./skills/beeclue-woocommerce-theme/README.md) |
 
 ### Upcoming Skills on the Roadmap
 
-- **`beeclue-site-audit`**: Deep performance, accessibility, SEO, and security audits for WordPress and modern web applications.
+- **`beeclue-site-audit`**: Deep performance, accessibility, SEO, and security audits for WordPress, Shopify, and modern web applications.
 - **`beeclue-seo-traffic-master`**: Technical SEO, structured data (JSON-LD), Core Web Vitals optimization, and semantic content cluster strategy.
 - **`beeclue-wordpress-hardening`**: Enterprise security hardening, REST API lockdown, rate limiting, and zero-trust configuration for high-traffic WordPress deployments.
 
@@ -64,6 +65,11 @@ beeclue-skills/
     │   ├── docs/                  # Architecture & MCP tool specifications
     │   ├── eval/                  # Multi-industry evaluation scenarios & benchmarks
     │   └── references/            # Deep domain blueprints (38 modular reference files)
+    ├── beeclue-shopify-theme/     # 100% self-contained Shopify OS 2.0 skill package
+    │   ├── SKILL.md               # Master agent prompt & 26-step execution pipeline
+    │   ├── README.md              # Skill documentation, triggers, and usage guide
+    │   ├── eval/                  # Multi-industry evaluation scenarios & benchmarks
+    │   └── references/            # Deep domain blueprints (43 modular reference files)
     └── beeclue-woocommerce-theme/ # 100% self-contained WooCommerce skill package
         ├── SKILL.md               # Master agent prompt & 25-step execution pipeline
         ├── README.md              # Skill documentation, triggers, and usage guide

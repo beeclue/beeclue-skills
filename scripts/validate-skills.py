@@ -218,6 +218,97 @@ def validate_next_theme():
     print(f"  ✓ Verified {checked} internal reference links in SKILL.md.")
 
 
+def validate_shopify_theme():
+    print("\n-------------------------------------------------------------")
+    print("Validating skill: beeclue-shopify-theme")
+    print("-------------------------------------------------------------")
+    skill_dir = os.path.join(SKILLS_ROOT, "beeclue-shopify-theme")
+    skill_md = os.path.join(skill_dir, "SKILL.md")
+    references_dir = os.path.join(skill_dir, "references")
+    eval_dir = os.path.join(skill_dir, "eval")
+
+    # 1. Frontmatter
+    print("[TEST 1/5] Validating SKILL.md frontmatter...")
+    assert os.path.exists(skill_md), f"SKILL.md missing at {skill_md}"
+    with open(skill_md, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    assert content.startswith("---"), "SKILL.md must start with YAML frontmatter delimiter '---'"
+    parts = content.split("---", 2)
+    assert len(parts) >= 3, "Invalid frontmatter structure"
+    frontmatter = parts[1]
+    assert "name: beeclue-shopify-theme" in frontmatter, "Missing name: beeclue-shopify-theme"
+    assert "description:" in frontmatter, "Missing description in frontmatter"
+    assert "create shopify theme" in frontmatter, "Missing core trigger phrase"
+    print("  ✓ SKILL.md frontmatter is valid.")
+
+    # 2. Reference files
+    print("[TEST 2/5] Validating modular references hierarchy...")
+    expected_files = [
+        "brand/brand-strategy.md", "brand/positioning.md", "brand/voice.md",
+        "intelligence/customer-behavior.md", "intelligence/competitive-intelligence.md",
+        "intelligence/industries/luxury-jewelry.md", "intelligence/industries/skincare-beauty.md",
+        "intelligence/industries/furniture-home.md", "intelligence/industries/consumer-electronics.md",
+        "intelligence/industries/automotive-mobility.md", "intelligence/industries/industrial-b2b.md",
+        "intelligence/industries/fashion-apparel.md", "intelligence/industries/food-gourmet.md",
+        "intelligence/industries/hospitality-hotel.md", "intelligence/industries/saas-tech.md",
+        "design/archetypes-library.md", "design/luxury-definition.md", "design/superclass-tokens.md",
+        "design/typography.md", "design/color-systems.md", "design/layout-grids.md",
+        "design/image-direction.md", "design/motion-personality.md", "design/anti-generic-linter.md",
+        "design/ui-styles-library.md", "intelligence/industry-style-matrix.md",
+        "commerce/strategy.md", "commerce/product-discovery.md", "commerce/cart-checkout.md",
+        "commerce/ecommerce-ux-patterns.md",
+        "shopify/architecture-os2.md", "shopify/theme-engineering.md", "shopify/ajax-cart-api.md",
+        "shopify/liquid-best-practices.md", "shopify/cli-tooling.md",
+        "shopify/ui-components-library.md", "shopify/customization-system.md",
+        "quality/visual-qa.md", "quality/a11y-wcag.md", "quality/performance-cwv.md",
+        "quality/seo-schema.md", "quality/design-critic.md",
+        "content/brand-copy.md", "content/content-strategy.md",
+        "examples/lumiere-shopify-reasoning.md"
+    ]
+    for rel_path in expected_files:
+        full_path = os.path.join(references_dir, rel_path)
+        assert os.path.isfile(full_path), f"Missing expected reference file: {rel_path}"
+        size = os.path.getsize(full_path)
+        assert size > 200, f"File {rel_path} appears empty or truncated ({size} bytes)"
+    print(f"  ✓ All {len(expected_files)} modular reference files exist and are populated.")
+
+    # 3. CSS Tokens
+    print("[TEST 3/5] Validating CSS token syntax...")
+    tokens_file = os.path.join(references_dir, "design", "superclass-tokens.md")
+    with open(tokens_file, "r", encoding="utf-8") as f:
+        text = f.read()
+    css_blocks = re.findall(r'```css(.*?)```', text, re.DOTALL)
+    assert css_blocks
+    invalid_pattern = re.compile(r'\b\d+(\.\d+)?\s+(rem|px|ms|em|vw|vh|%)\b')
+    for block in css_blocks:
+        matches = invalid_pattern.findall(block)
+        assert not matches, f"Found invalid CSS token syntax with spaces in CSS block: {matches}"
+    print("  ✓ Strict CSS unit formatting validated.")
+
+    # 4. Evals
+    print("[TEST 4/5] Validating Evaluation Scenarios...")
+    eval_files = [
+        "scenarios/luxury-jewelry.md", "scenarios/premium-skincare.md",
+        "scenarios/automotive.md", "scenarios/b2b-industrial.md",
+        "cross-industry-diversity-test.md"
+    ]
+    for ef in eval_files:
+        assert os.path.isfile(os.path.join(eval_dir, ef)), f"Missing evaluation scenario: {ef}"
+    print(f"  ✓ All {len(eval_files)} evaluation scenarios validated.")
+
+    # 5. Relative markdown links
+    print("[TEST 5/5] Auditing relative markdown links in SKILL.md...")
+    links = re.findall(r'references/([a-zA-Z0-9_\-/\.]+)', content)
+    checked = 0
+    for link in links:
+        clean_link = link.rstrip(").,")
+        target = os.path.join(references_dir, clean_link)
+        assert os.path.exists(target), f"Broken reference link in SKILL.md: references/{clean_link}"
+        checked += 1
+    print(f"  ✓ Verified {checked} internal reference links in SKILL.md.")
+
+
 def main():
     print("═══════════════════════════════════════════════════════════════")
     print("Beeclue Skills — Automated Verification Suite")
@@ -225,6 +316,7 @@ def main():
     try:
         validate_woocommerce_theme()
         validate_next_theme()
+        validate_shopify_theme()
         print("\n═══════════════════════════════════════════════════════════════")
         print("ALL TESTS PASSED: All Beeclue Skills are Certified!")
         print("═══════════════════════════════════════════════════════════════")

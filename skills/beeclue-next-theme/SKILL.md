@@ -112,17 +112,35 @@ If neither `magic` nor `StitchMCP` are present, **ask the user**:
 
 ---
 
-## 3. INTERACTIVE CLIENT DISCOVERY QUESTIONNAIRE
+## 3. MANDATORY CLIENT DISCOVERY: INDUSTRY & COLOR THEME PROTOCOL
 
-Never start building with assumptions. Initiate an interactive discovery session asking the user:
+Never start building or authoring components with blind assumptions. You MUST enforce the following protocol:
 
+### 3.1 Missing Industry Protocol (Mandatory Halt & Prompt)
+If the user's prompt did NOT specify their business industry or niche, you MUST HALT and ask before proceeding:
+> *"To architect a bespoke digital flagship, what industry does your brand belong to? (e.g., SaaS & Tech, Architecture & Real Estate, Healthcare & Medical, Creative Agency, Luxury Lifestyle, Hospitality & Dining, Professional Services, or Industrial Manufacturing)?"*
+
+NEVER guess or assume an industry without explicit client confirmation.
+
+### 3.2 Missing Color Theme Protocol (Mandatory Halt & Suggest-and-Confirm)
+If the user's prompt did NOT specify a color theme, palette, or hex codes, you MUST HALT and prompt:
+> *"Do you have existing brand colors or a preferred color theme? If not, based on your industry, I recommend one of these 3 curated palettes:*
+> *1. **[Palette Name 1]**: Canvas `#[HEX]`, Text `#[HEX]`, Accent `#[HEX]` — [One-line design rationale]*
+> *2. **[Palette Name 2]**: Canvas `#[HEX]`, Text `#[HEX]`, Accent `#[HEX]` — [One-line design rationale]*
+> *3. **[Palette Name 3]**: Canvas `#[HEX]`, Text `#[HEX]`, Accent `#[HEX]` — [One-line design rationale]*
+> *Which one should I lock in, or do you have custom hex codes / brand guidelines to use?"*
+
+Consult `references/design/color-systems.md` for industry-calibrated harmonies. NEVER proceed to token generation or scaffolding with an assumed palette.
+
+### 3.3 Full Interactive Questionnaire
 1. **Business Identity**: What is the company name, industry, and core tagline?
-2. **Target Audience**: Who is the high-value buyer or decision-maker (B2B executives, affluent consumers, patients, diners)?
-3. **Value Proposition & Conversion**: What is the single most important action visitors must take (book consultation, schedule demo, request quote, reserve table)?
-4. **Brand Personality**: Which aesthetic register best reflects the brand (e.g. Cupertino Clean, Neo-Editorial, Swiss Precision, Cyber-Minimal, Warm Artisanal, Clinical Luxe)?
-5. **Key Architecture & Pages**: Which pages and chapters are required (Homepage, Services Silo, Case Studies, About, FAQ, Contact)?
-6. **Existing Assets**: Do you have existing brand colors, logos, or font preferences, or should Beeclue synthesize them?
-7. **UI Design Style (mandatory suggest-and-confirm)**: After Q1, look up `references/intelligence/industry-style-matrix.md` and present the Top 3 styles from `references/design/ui-styles-library.md` with one-line WHY each, then ask the user to pick 1 or name their own from the full 27. Example: *"Based on your [industry], I recommend (1) Minimalism — [reason], (2) Bento Grid — [reason], (3) Glassmorphism — [reason]. Which one should I lock in, or would you prefer a different style from the list?"* HALT all build steps until the user explicitly confirms a style. NEVER auto-apply your #1 pick.
+2. **Color Theme & Brand Palette**: What are the brand colors, canvas preferences, or confirmed palette option?
+3. **Target Audience**: Who is the high-value buyer or decision-maker (B2B executives, affluent consumers, patients, diners)?
+4. **Value Proposition & Conversion**: What is the single most important action visitors must take (book consultation, schedule demo, request quote, reserve table)?
+5. **Brand Personality**: Which aesthetic register best reflects the brand (e.g. Cupertino Clean, Neo-Editorial, Swiss Precision, Cyber-Minimal, Warm Artisanal, Clinical Luxe)?
+6. **Key Architecture & Pages**: Which pages and chapters are required (Homepage, Services Silo, Case Studies, About, FAQ, Contact)?
+7. **Existing Assets**: Do you have existing brand colors, logos, or font preferences, or should Beeclue synthesize them?
+8. **UI Design Style (mandatory suggest-and-confirm)**: After Q1, look up `references/intelligence/industry-style-matrix.md` and present the Top 3 styles from `references/design/ui-styles-library.md` with one-line WHY each, then ask the user to pick 1 or name their own from the full 27. Example: *"Based on your [industry], I recommend (1) Minimalism — [reason], (2) Bento Grid — [reason], (3) Glassmorphism — [reason]. Which one should I lock in, or would you prefer a different style from the list?"* HALT all build steps until the user explicitly confirms a style. NEVER auto-apply your #1 pick.
 
 ---
 
@@ -132,7 +150,7 @@ Execute these 26 steps sequentially for every build:
 
 ```
 [DISCOVERY & INTELLIGENCE]
-1. Execute interactive client discovery questionnaire.
+1. Execute client discovery: halt and confirm Industry and Color Theme if not provided by default.
 2. Identify target industry (Consult references/intelligence/industries/).
 3. Audit buyer friction and trust requirements (Consult references/intelligence/customer-behavior.md).
 4. Execute competitive differentiation scan (Consult references/intelligence/competitive-intelligence.md).
@@ -400,6 +418,7 @@ Score $< 80$ triggers mandatory revision; score $\ge 90$ certifies **Bespoke App
 - [ ] Node.js verified and latest Next.js 15+ installed in empty directories.
 - [ ] 21st.dev (`magic` MCP) & StitchMCP verified or user fallback confirmed.
 - [ ] Interactive discovery questionnaire completed with client.
+- [ ] Industry and Color Theme explicitly confirmed by user before scaffolding (NEVER assumed).
 - [ ] UI style explicitly confirmed by user (Top 3 suggested from industry-style-matrix, user pick recorded as `ui_style` — NEVER assumed).
 - [ ] Quantitative Brand DNA (0–100) and YAML Design Contract emitted (contract includes confirmed `ui_style`).
 - [ ] 5-layer CSS tokens declared in `globals.css` without invalid syntax spacing (e.g. `2.5rem`, `400ms`).
