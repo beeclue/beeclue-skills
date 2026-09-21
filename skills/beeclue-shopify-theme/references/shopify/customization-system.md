@@ -40,79 +40,79 @@ BeeClue Shopify themes provide unmatched merchant customizability through a 12-g
     "theme_support_url": "https://beeclue.com/contact"
   },
   {
-    "name": "1. Brand Colors & 5-Layer Tokens",
+    "name": "Colors",
     "settings": [
       {
         "type": "header",
-        "content": "Surface & Canvas Colors"
+        "content": "Surface and canvas colors"
       },
       {
         "type": "color",
         "id": "color_canvas",
-        "label": "Canvas Background",
+        "label": "Canvas background",
         "default": "#F7F3EE",
         "info": "The primary page canvas tone."
       },
       {
         "type": "color",
         "id": "color_surface",
-        "label": "Surface / Card Background",
+        "label": "Card and surface background",
         "default": "#FFFFFF"
       },
       {
         "type": "header",
-        "content": "Text & Line Colors"
+        "content": "Text and line colors"
       },
       {
         "type": "color",
         "id": "color_text_primary",
-        "label": "Primary Text & Ink",
+        "label": "Primary text",
         "default": "#1C1915"
       },
       {
         "type": "color",
         "id": "color_text_muted",
-        "label": "Muted / Secondary Text",
+        "label": "Muted text",
         "default": "#70695E"
       },
       {
         "type": "color",
         "id": "color_border",
-        "label": "Subtle Hairline Borders",
+        "label": "Border color",
         "default": "rgba(28, 25, 21, 0.12)"
       },
       {
         "type": "header",
-        "content": "Action & Conversion Accent"
+        "content": "Accent colors"
       },
       {
         "type": "color",
         "id": "color_accent",
-        "label": "Primary Conversion Accent",
+        "label": "Accent",
         "default": "#C8602A",
         "info": "Used for checkout CTA, free shipping progress fill, and active swatches."
       },
       {
         "type": "color",
         "id": "color_accent_hover",
-        "label": "Accent Hover State",
+        "label": "Accent hover",
         "default": "#B25220"
       }
     ]
   },
   {
-    "name": "2. Typography & Fluid Scale",
+    "name": "Typography",
     "settings": [
       {
         "type": "font_picker",
         "id": "type_header_font",
-        "label": "Heading Font",
+        "label": "Heading font",
         "default": "cormorant_garamond_n5"
       },
       {
         "type": "font_picker",
         "id": "type_body_font",
-        "label": "Body Font",
+        "label": "Body font",
         "default": "plus_jakarta_sans_n4"
       },
       {
@@ -122,77 +122,77 @@ BeeClue Shopify themes provide unmatched merchant customizability through a 12-g
         "max": 140,
         "step": 5,
         "unit": "%",
-        "label": "Heading Scale Multiplier",
+        "label": "Heading scale multiplier",
         "default": 100
       },
       {
         "type": "checkbox",
         "id": "heading_uppercase",
-        "label": "Uppercase Section Titles",
+        "label": "Uppercase section headings",
         "default": false
       },
       {
         "type": "select",
         "id": "eyebrow_letter_spacing",
-        "label": "Eyebrow Tracking",
+        "label": "Eyebrow letter spacing",
         "options": [
           { "value": "0.05em", "label": "Subtle (0.05em)" },
-          { "value": "0.15em", "label": "Editorial Luxury (0.15em)" },
-          { "value": "0.25em", "label": "Haute Monograph (0.25em)" }
+          { "value": "0.15em", "label": "Editorial luxury (0.15em)" },
+          { "value": "0.25em", "label": "Haute monograph (0.25em)" }
         ],
         "default": "0.15em"
       }
     ]
   },
   {
-    "name": "3. Geometry & Corner Radii",
+    "name": "Corner radii",
     "settings": [
       {
         "type": "select",
         "id": "corner_radius_preset",
-        "label": "Corner Radius Preset",
+        "label": "Corner radius preset",
         "options": [
-          { "value": "0px", "label": "Sharp Architectural (0px)" },
-          { "value": "4px", "label": "Subtle Refinement (4px)" },
-          { "value": "12px", "label": "Smooth Contemporary (12px)" },
-          { "value": "24px", "label": "Organic Soft (24px)" }
+          { "value": "0px", "label": "Sharp architectural (0px)" },
+          { "value": "4px", "label": "Subtle refinement (4px)" },
+          { "value": "12px", "label": "Smooth contemporary (12px)" },
+          { "value": "24px", "label": "Organic soft (24px)" }
         ],
         "default": "0px"
       },
       {
         "type": "select",
         "id": "card_shadow",
-        "label": "Surface Elevation / Shadow",
+        "label": "Surface elevation and shadow",
         "options": [
-          { "value": "none", "label": "None (Flat Hairline)" },
-          { "value": "0 4px 20px rgba(0,0,0,0.04)", "label": "Subtle Feather" },
-          { "value": "0 12px 40px rgba(0,0,0,0.08)", "label": "Editorial Floating" }
+          { "value": "none", "label": "None" },
+          { "value": "0 4px 20px rgba(0,0,0,0.04)", "label": "Subtle feather" },
+          { "value": "0 12px 40px rgba(0,0,0,0.08)", "label": "Editorial floating" }
         ],
         "default": "none"
       }
     ]
   },
   {
-    "name": "4. Buttons & Interactions",
+    "name": "Buttons",
     "settings": [
       {
         "type": "select",
         "id": "btn_style",
-        "label": "Primary Button Style",
+        "label": "Primary button style",
         "options": [
-          { "value": "solid", "label": "Filled Solid" },
-          { "value": "outline", "label": "Hairline Outline" },
-          { "value": "magnetic", "label": "Magnetic Cursor Follow" }
+          { "value": "solid", "label": "Solid" },
+          { "value": "outline", "label": "Outline" },
+          { "value": "magnetic", "label": "Magnetic" }
         ],
         "default": "solid"
       },
       {
         "type": "select",
         "id": "btn_border_radius",
-        "label": "Button Shape",
+        "label": "Button shape",
         "options": [
-          { "value": "match", "label": "Match Corner Radius Preset" },
-          { "value": "999px", "label": "Pill Contour (999px)" },
+          { "value": "match", "label": "Match corner radius" },
+          { "value": "999px", "label": "Pill (999px)" },
           { "value": "0px", "label": "Square (0px)" }
         ],
         "default": "match"
@@ -200,226 +200,227 @@ BeeClue Shopify themes provide unmatched merchant customizability through a 12-g
     ]
   },
   {
-    "name": "5. Header & Navigation",
+    "name": "Header and navigation",
     "settings": [
       {
         "type": "select",
         "id": "header_sticky_mode",
-        "label": "Sticky Navigation Behavior",
+        "label": "Sticky navigation behavior",
         "options": [
-          { "value": "always", "label": "Always Sticky" },
-          { "value": "on_scroll_up", "label": "Reveal on Scroll Up" },
-          { "value": "none", "label": "Static (No Stick)" }
+          { "value": "always", "label": "Always sticky" },
+          { "value": "on_scroll_up", "label": "Reveal on scroll up" },
+          { "value": "none", "label": "Static" }
         ],
         "default": "always"
       },
       {
         "type": "checkbox",
         "id": "header_transparent_hero",
-        "label": "Enable Transparent Header over Hero",
+        "label": "Show transparent header over hero",
         "default": true
       },
       {
         "type": "checkbox",
         "id": "header_glassmorphic_blur",
-        "label": "Enable Frosted Glass Blur",
+        "label": "Show frosted glass blur",
         "default": true
       }
     ]
   },
   {
-    "name": "6. Predictive Search & Discovery",
+    "name": "Predictive search",
     "settings": [
       {
         "type": "select",
         "id": "search_display_type",
-        "label": "Search Experience",
+        "label": "Search experience",
         "options": [
-          { "value": "drawer", "label": "Slide-out Search Drawer" },
-          { "value": "modal", "label": "Full-screen Overlay Modal" }
+          { "value": "drawer", "label": "Drawer" },
+          { "value": "modal", "label": "Modal" }
         ],
         "default": "drawer"
       },
       {
         "type": "checkbox",
         "id": "search_show_vendor",
-        "label": "Show Product Brand/Vendor",
+        "label": "Show product vendor",
         "default": true
       },
       {
         "type": "checkbox",
         "id": "search_show_price",
-        "label": "Show Pricing in Results",
+        "label": "Show price in results",
         "default": true
       }
     ]
   },
   {
-    "name": "7. Product Cards & Catalog",
+    "name": "Product cards",
     "settings": [
       {
         "type": "select",
         "id": "card_aspect_ratio",
-        "label": "Card Image Aspect Ratio",
+        "label": "Card image aspect ratio",
         "options": [
           { "value": "1/1", "label": "Square (1:1)" },
-          { "value": "3/4", "label": "Editorial Portrait (3:4)" },
-          { "value": "2/3", "label": "Tall Portrait (2:3)" }
+          { "value": "3/4", "label": "Portrait (3:4)" },
+          { "value": "2/3", "label": "Tall (2:3)" }
         ],
         "default": "3/4"
       },
       {
         "type": "checkbox",
         "id": "card_hover_secondary_image",
-        "label": "Show Secondary Image on Hover",
+        "label": "Show secondary image on hover",
         "default": true
       },
       {
         "type": "select",
         "id": "card_quick_add_mode",
-        "label": "Quick Add Trigger",
+        "label": "Quick add trigger",
         "options": [
-          { "value": "instant", "label": "Instant Add to Cart" },
-          { "value": "quick_view", "label": "Open Quick View Modal" },
-          { "value": "hidden", "label": "None (Navigate to PDP)" }
+          { "value": "instant", "label": "Instant add to cart" },
+          { "value": "quick_view", "label": "Open quick view modal" },
+          { "value": "hidden", "label": "None" }
         ],
         "default": "instant"
       },
       {
         "type": "checkbox",
         "id": "card_show_color_swatches",
-        "label": "Show Color Swatch Preview",
+        "label": "Show color swatch preview",
         "default": true
       }
     ]
   },
   {
-    "name": "8. Variant Swatches & Selectors",
+    "name": "Variant swatches",
     "settings": [
       {
         "type": "select",
         "id": "swatch_style",
-        "label": "Color Swatch Presentation",
+        "label": "Color swatch presentation",
         "options": [
-          { "value": "circle", "label": "Minimalist Color Circles" },
-          { "value": "pill", "label": "Textured Pill Buttons" },
-          { "value": "image_thumb", "label": "Variant Thumbnail Images" }
+          { "value": "circle", "label": "Color circles" },
+          { "value": "pill", "label": "Pill buttons" },
+          { "value": "image_thumb", "label": "Variant images" }
         ],
         "default": "circle"
       },
       {
         "type": "checkbox",
         "id": "swatches_out_of_stock_cross",
-        "label": "Strikethrough Out-of-Stock Variants",
+        "label": "Strikethrough unavailable variants",
         "default": true
       }
     ]
   },
   {
-    "name": "9. Product Details Page (PDP)",
+    "name": "Product page",
     "settings": [
       {
         "type": "select",
         "id": "pdp_gallery_layout",
-        "label": "Media Gallery Layout",
+        "label": "Media gallery layout",
         "options": [
-          { "value": "grid_2col", "label": "Asymmetric 2-Column Grid" },
-          { "value": "stacked", "label": "Full-Width Stacked" },
-          { "value": "thumbnails_left", "label": "Thumbnails Strip (Left)" }
+          { "value": "grid_2col", "label": "Two columns" },
+          { "value": "stacked", "label": "Stacked" },
+          { "value": "thumbnails_left", "label": "Thumbnails left" }
         ],
         "default": "grid_2col"
       },
       {
         "type": "checkbox",
         "id": "enable_sticky_atc",
-        "label": "Enable Floating Sticky Buy Bar",
+        "label": "Show floating sticky buy bar",
         "default": true
       },
       {
         "type": "page",
         "id": "size_guide_page",
-        "label": "Global Size Guide Page Content"
+        "label": "Size guide page content"
       }
     ]
   },
   {
-    "name": "10. Cart Drawer & Shipping Milestones",
+    "name": "Cart",
     "settings": [
       {
         "type": "select",
         "id": "cart_type",
-        "label": "Cart Experience",
+        "label": "Cart type",
         "options": [
-          { "value": "drawer", "label": "Slide-out Cart Drawer" },
-          { "value": "page", "label": "Dedicated Page" }
+          { "value": "drawer", "label": "Drawer" },
+          { "value": "page", "label": "Page" },
+          { "value": "modal", "label": "Modal" }
         ],
         "default": "drawer"
       },
       {
         "type": "number",
         "id": "free_shipping_threshold",
-        "label": "Free Shipping Threshold ($)",
+        "label": "Free shipping threshold",
         "default": 75,
         "info": "Set to 0 to disable progress bar."
       },
       {
         "type": "collection",
         "id": "cart_cross_sell_collection",
-        "label": "In-Drawer Cross-Sell Collection",
-        "info": "Display 2-3 impulse accessories at the bottom of the drawer."
+        "label": "Cart cross-sell collection",
+        "info": "Display recommended items in the cart drawer."
       },
       {
         "type": "checkbox",
         "id": "enable_cart_notes",
-        "label": "Enable Order Inscription / Gift Note",
+        "label": "Show order notes",
         "default": true
       }
     ]
   },
   {
-    "name": "11. Luxury Micro-Interactions & Motion",
+    "name": "Animation and motion",
     "settings": [
       {
         "type": "select",
         "id": "motion_speed",
-        "label": "Animation Velocity",
+        "label": "Animation velocity",
         "options": [
-          { "value": "deliberate", "label": "Deliberate & Velvety (400ms)" },
-          { "value": "standard", "label": "Crisp Responsive (250ms)" },
-          { "value": "instant", "label": "Reduced Motion / Instant" }
+          { "value": "deliberate", "label": "Deliberate (400ms)" },
+          { "value": "standard", "label": "Standard (250ms)" },
+          { "value": "instant", "label": "Instant" }
         ],
         "default": "standard"
       },
       {
         "type": "select",
         "id": "icon_stroke_width",
-        "label": "Icon Stroke Width",
+        "label": "Icon stroke width",
         "options": [
-          { "value": "1.0", "label": "Ultra-Fine Hairline (1.0px)" },
-          { "value": "1.25", "label": "Luxury Standard (1.25px)" },
-          { "value": "1.5", "label": "Modern Bold (1.5px)" }
+          { "value": "1.0", "label": "Fine (1.0px)" },
+          { "value": "1.25", "label": "Standard (1.25px)" },
+          { "value": "1.5", "label": "Bold (1.5px)" }
         ],
         "default": "1.25"
       }
     ]
   },
   {
-    "name": "12. Social Accounts & Favicon",
+    "name": "Social media",
     "settings": [
       {
         "type": "image_picker",
         "id": "favicon",
-        "label": "Favicon Image (32x32 PNG)"
+        "label": "Favicon"
       },
       {
         "type": "text",
         "id": "social_instagram_link",
-        "label": "Instagram URL"
+        "label": "Instagram link"
       },
       {
         "type": "text",
         "id": "social_twitter_link",
-        "label": "X / Twitter URL"
+        "label": "Twitter link"
       }
     ]
   }
@@ -465,3 +466,17 @@ How `settings_schema.json` transforms into CSS custom properties:
   }
 </style>
 ```
+
+---
+
+## 4. Shopify Theme Store Schema Compliance
+
+Per [Shopify Theme Store Requirements](theme-store-requirements.md) Section 14:
+1. **Sentence Case**: All category, section, preset, and setting names must be in sentence case (e.g. "Header and navigation", not "Header & Navigation").
+2. **American English**: Always use American spelling (`color`, `center`, `catalog`, `dialog`, `canceled`).
+3. **No Ampersands**: Never use `&` in settings labels or section names (always write "and").
+4. **Official Shopify Terminology**: Use `home page` (not homepage), `top bar` (not meta-nav), `button label` (not button name), `body text` (not main text), `slideshow` (not slider), `cart type` (not Ajax cart).
+5. **Declarative Tone**: Use declarative statements ("Use custom logo", never questions like "Use custom logo?").
+6. **Theme Info Block**: Must include a `theme_info` section in `config/settings_schema.json` with version and support URLs.
+7. **Paired Colors**: Every background color setting must be accompanied by a corresponding foreground color setting.
+8. **Navigation Menus**: Settings of type `link_list` must default to `"main-menu"` in the header, or `"footer"` in the footer.

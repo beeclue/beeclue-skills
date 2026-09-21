@@ -407,6 +407,8 @@ Reels/TikTok style vertical 9:16 video cards with synchronized product quick-pur
 
 ## 9. Countdown Drop / Limited Edition Urgency Timer (`sections/countdown-banner.liquid`)
 
+> **Shopify Theme Store Requirement (Section 8 Anti-Deception)**: Fictitious scarcity or fake countdown timers are **strictly forbidden**. This component must only be used for authentic, merchant-scheduled product drops or promotions with legitimate deadlines.
+
 Dignified, editorial countdown timer without flashing red discounts:
 
 ```liquid
@@ -751,3 +753,18 @@ Standardizes all icons with a 1.25px stroke, no bloated font icon libraries:
     <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
 {%- endcase -%}
 ```
+
+---
+
+## 23. Mandatory Shopify Theme Store Core Components
+
+Per [Shopify Theme Store Requirements](theme-store-requirements.md), every theme must natively implement these core components:
+
+1. **Account Component**: `<shopify-account></shopify-account>` rendered in both desktop and mobile header navigation.
+2. **Follow on Shop Button**: `{{ shop | login_button: action: 'follow' }}` rendered with unaltered branded styling.
+3. **Pickup Availability**: Render store local pickup availability on PDP using `variant.store_availabilities`.
+4. **Shop Pay Installments Banner**: `{{ form | payment_terms }}` inside the PDP product form.
+5. **Accelerated Checkout Buttons**: `{{ form | payment_button }}` on PDP and `content_for_additional_checkout_buttons` on Cart page.
+6. **Gift Card Recipient Form**: Inputs for `recipient[email]`, `recipient[name]`, `recipient[message]`, and `recipient[send_on]` on PDP for gift card products.
+7. **Selling Plans & Subscriptions**: Subscription allocation selector on PDP and selling plan badges in Cart drawer / Cart page.
+8. **Unit Pricing**: Output `variant.unit_price` and `variant.unit_price_measurement` on PDP, collection grid cards, and cart items.

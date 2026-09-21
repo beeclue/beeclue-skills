@@ -261,6 +261,7 @@ def validate_shopify_theme():
         "shopify/architecture-os2.md", "shopify/theme-engineering.md", "shopify/ajax-cart-api.md",
         "shopify/liquid-best-practices.md", "shopify/cli-tooling.md",
         "shopify/ui-components-library.md", "shopify/customization-system.md",
+        "shopify/theme-store-requirements.md",
         "quality/visual-qa.md", "quality/a11y-wcag.md", "quality/performance-cwv.md",
         "quality/seo-schema.md", "quality/design-critic.md",
         "content/brand-copy.md", "content/content-strategy.md",

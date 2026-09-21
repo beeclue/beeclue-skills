@@ -31,8 +31,9 @@ Most AI web generators produce the same website repeatedly: white backgrounds, 3
 6. **Integrates 22 Specialized Shopify UI Components**: Mega Menu with promotion tiles, predictive live search, quick view modal, shoppable hotspot lookbooks, before/after comparison sliders, size guide drawers with unit conversion, bundles & frequently bought together, vertical video reels, 3D AR media galleries, and faceted filtering.
 7. **Offers a 12-Group Deep Customization Architecture**: Fully typed `settings_schema.json` controls covering colors, fluid font scales, corner radii presets (0px to 24px), button physics, header sticky modes, product card options, variant swatch modes, cart milestones, and motion speeds.
 8. **Engineers High-Converting Shopify Commerce UX**: Production-ready floating sticky PDP buy bars, accessible variant swatches, native faceted collection filtering, and a dynamic AJAX cart drawer powered by the Shopify Ajax API & Section Rendering API with live free shipping progress calculation.
-9. **Guarantees WCAG 2.1 AA & 90+ Core Web Vitals**: Keyboard focus traps, screen-reader `aria-live` regions, minimum 44px tap targets, and native `image_tag` responsive srcset generation.
+9. **Guarantees WCAG 2.1 AA & 90+ Core Web Vitals**: Keyboard focus traps, screen-reader `aria-live` regions, minimum 24px–44px tap targets, and native `image_tag` responsive srcset generation.
 10. **Evaluates via Independent Design Critic**: Scores every build against an 11-vector, 100-point rubric (<70 Reject to 95+ Exceptional).
+11. **Enforces Official Shopify Theme Store Requirements**: Strictly adheres to the 22 core sections of [Shopify Theme Store Requirements](references/shopify/theme-store-requirements.md) — OS 2.0 sections everywhere, section groups (`header-group.json`, `footer-group.json`), Custom Liquid sections and blocks, `<shopify-account>`, Follow on Shop (`login_button`), pickup availability, Shop Pay Installments, dynamic `routes` URLs, sentence case and American English in schemas, zero deceptive scarcity tactics, and dual-mode attribution.
 
 ---
 

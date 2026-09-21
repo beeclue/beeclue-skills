@@ -115,3 +115,64 @@ Always format prices using store settings rather than hardcoding dollar signs:
 }
 {% endschema %}
 ```
+
+---
+
+## 6. Shopify Theme Store Liquid & Storefront Requirements
+
+Per [Shopify Theme Store Requirements](theme-store-requirements.md), every theme must adhere to these Liquid rules:
+
+### 6.1 Dynamic Storefront URLs (`routes` Object)
+Never hardcode URLs like `href="/"`, `href="/cart"`, or `href="/search"`. Always use the `routes` object to support multiple languages and custom Shopify routing:
+- `{{ routes.root_url }}` (Home page)
+- `{{ routes.cart_url }}` (Cart page)
+- `{{ routes.cart_add_url }}` (Cart add endpoint)
+- `{{ routes.cart_change_url }}` (Cart change endpoint)
+- `{{ routes.search_url }}` (Search template)
+- `{{ routes.predictive_search_url }}` (Predictive search endpoint)
+- `{{ routes.all_products_collection_url }}` (All products collection)
+
+### 6.2 Taxes Included & Unit Pricing
+- **Taxes Included**: Always indicate when taxes are included in price:
+  ```liquid
+  {%- if cart.taxes_included -%}
+    <span class="tax-note">{{ 'sections.cart.taxes_included' | t }}</span>
+  {%- endif -%}
+  ```
+- **Unit Pricing**: Output unit price on PDP, collection cards, and cart:
+  ```liquid
+  {%- if variant.unit_price_measurement -%}
+    <span class="unit-price">
+      {{ variant.unit_price | money }} /
+      {%- if variant.unit_price_measurement.reference_value != 1 -%}
+        {{ variant.unit_price_measurement.reference_value }}
+      {%- endif -%}
+      {{ variant.unit_price_measurement.reference_unit }}
+    </span>
+  {%- endif -%}
+  ```
+
+### 6.3 Full-Color Payment Icons
+Output payment icons using Shopify's official SVG filter (must be rendered in full color):
+```liquid
+{%- for type in shop.enabled_payment_types -%}
+  {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+{%- endfor -%}
+```
+
+### 6.4 Font Loading with `font_modify`
+Shopify font pickers require bold, italic, and bold-italic variants to be loaded dynamically:
+```liquid
+{% style %}
+  {{ settings.heading_font | font_face: font_display: 'swap' }}
+  {{ settings.heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.body_font | font_face: font_display: 'swap' }}
+  {{ settings.body_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+{% endstyle %}
+```
+
+### 6.5 Account Component & Follow on Shop
+- Render `<shopify-account></shopify-account>` in both desktop and mobile headers.
+- Render `{{ shop | login_button: action: 'follow' }}` without modifying branded button colors.

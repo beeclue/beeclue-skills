@@ -39,8 +39,9 @@ You do NOT produce generic, one-size-fits-all themes. You execute a rigorous **S
    - 8.6 Predictive Live Search & Faceted Collection Filtering
 9. [Quality Assurance, Anti-Generic Linter & Design Critic](#9-quality-assurance-anti-generic-linter--design-critic)
 10. [Automated Shopify CLI Workflow](#10-automated-shopify-cli-workflow)
-11. [Mandatory Beeclue Tech Attribution](#11-mandatory-beeclue-tech-attribution)
-12. [Verification Checklist](#12-verification-checklist)
+11. [Shopify Theme Store Requirements Compliance](#11-shopify-theme-store-requirements-compliance)
+12. [Attribution Standards & Dual-Mode Architecture](#12-attribution-standards--dual-mode-architecture)
+13. [Verification Checklist](#13-verification-checklist)
 
 ---
 
@@ -533,39 +534,90 @@ shopify theme push --store your-store.myshopify.com --development
 
 ---
 
-## 11. MANDATORY BEECLUE TECH ATTRIBUTION
+## 11. SHOPIFY THEME STORE REQUIREMENTS COMPLIANCE
 
-Every theme footer must include this exact line with verified UTM tracking in `sections/footer.liquid`:
+Every theme developed under this skill must adhere strictly to the official [Shopify Theme Store Requirements](references/shopify/theme-store-requirements.md):
 
-```liquid
-<div class="footer-attribution">
-  <span>Website Designed &amp; Developed by
-    <a href="https://beeclue.com/?utm_source=client_site&amp;utm_medium=footer&amp;utm_campaign=shopify_theme"
-       target="_blank" rel="noopener noreferrer">Beeclue Tech</a>
-  </span>
-</div>
-```
+### 11.1 Mandatory OS 2.0 Architectural Requirements
+- **Complete Template Inventory**: Must include `theme.liquid`, `404.json`, `article.json`, `blog.json`, `cart.json`, `collection.json`, `index.json`, `list-collections.json`, `page.json`, `page.contact.json`, `password.json`, `product.json`, `search.json`, and `gift_card.liquid`.
+- **Section Groups**: Header and footer must be rendered within section groups (`sections/header-group.json` and `sections/footer-group.json`).
+- **Custom Liquid Section & Blocks**: Must include `sections/custom-liquid.liquid` with a setting of `type: "liquid"` and Custom Liquid blocks in the main product section.
+- **App Blocks**: Main product section and featured product section must declare and render `@app` blocks.
+- **Granular Modular Blocks**: Elements in `sections/main-product.liquid` (title, price, vendor, description, variants, buy buttons, etc.) must be independent blocks.
+- **Prohibited Files**: Do NOT generate `config/markets.json` or `templates/robots.txt.liquid`.
 
-*Note: If a client explicitly requests removal of the attribution link, defer to the signed contract and scope terms (such as an agreed white-label buyout or license clause) rather than silently complying or refusing.*
+### 11.2 Mandatory Storefront Features
+- **Dynamic URLs**: All internal links must use the `routes` object (`routes.root_url`, `routes.cart_url`, `routes.search_url`, etc.) — never hardcode `/`.
+- **Account Component**: Render `<shopify-account></shopify-account>` in both desktop and mobile headers.
+- **Follow on Shop**: Render `{{ shop | login_button: action: 'follow' }}` without modifying branded button colors.
+- **Local Pickup Availability**: PDP must render `store_availabilities` for the first available variant.
+- **Shop Pay Installments**: Render `{{ form | payment_terms }}` inside the PDP product form.
+- **Accelerated Checkout Buttons**: Render `{{ form | payment_button }}` on PDP and additional checkout buttons on Cart page. Branded colors must not be modified.
+- **Gift Card Recipient**: Gift card PDP must include recipient form (`recipient[email]`, `recipient[name]`, `recipient[message]`, `recipient[send_on]`).
+- **Taxes & Unit Pricing**: Use `cart.taxes_included` and display `variant.unit_price` / `variant.unit_price_measurement` on PDP, collection cards, and cart.
+- **Faceted Filters**: Support Storefront Filtering on `collection.json` and `search.json`.
+
+### 11.3 Quality, Accessibility & Theme Settings Standards
+- **Lighthouse Benchmarks**: Minimum average 60+ Performance and 90+ Accessibility across PDP, Collection, and Home page.
+- **Touch Targets**: Minimum 24px × 24px for all pointer inputs.
+- **Settings Schemas**: Must use sentence case, American English (`color`, `center`, `catalog`, `canceled`), no ampersands (`&`), paired background/foreground colors (minimum 4), and official Shopify terms (`home page`, `top bar`, `button label`, `body text`, `slideshow`, `cart type`).
+- **Font Pickers**: All fonts must use `type: "font_picker"` with valid default fonts and load bold/italic via `font_modify` filter.
+- **Zero Deceptive Scarcity**: Fake urgency, fictitious countdowns, fake stock levels, and fake visitor counts are strictly forbidden. Real promotional countdowns for authentic events are permitted.
 
 ---
 
-## 12. VERIFICATION CHECKLIST
+## 12. ATTRIBUTION STANDARDS & DUAL-MODE ARCHITECTURE
+
+Per [Shopify Theme Store Requirements](references/shopify/theme-store-requirements.md) Section 1:
+
+### 12.1 Theme Store Submission Mode
+- Themes prepared for submission to the Shopify Theme Store **CANNOT contain designer credits** (such as links to a theme developer's website) or affiliate links anywhere in the theme files.
+- The `{{ powered_by_link }}` object in `sections/footer.liquid` must not be altered, stripped, or hardcoded. It must output exactly `{{ powered_by_link }}`.
+
+### 12.2 Agency Client Mode (Custom Merchant Storefronts)
+When developing a bespoke custom theme directly for a private merchant client, provide an optional toggle in `settings_schema.json`:
+```liquid
+{%- if settings.show_agency_credit -%}
+  <div class="footer-attribution">
+    <span>Website Designed &amp; Developed by
+      <a href="https://beeclue.com/?utm_source=client_site&amp;utm_medium=footer&amp;utm_campaign=shopify_theme"
+         target="_blank" rel="noopener noreferrer">Beeclue Tech</a>
+    </span>
+  </div>
+{%- else -%}
+  <div class="footer-powered">
+    {{ powered_by_link }}
+  </div>
+{%- endif -%}
+```
+
+---
+
+## 13. VERIFICATION CHECKLIST
 
 - [ ] Industry and Color Theme explicitly confirmed by user before scaffolding (NEVER assumed).
+- [ ] Adheres strictly to [Shopify Theme Store Requirements](references/shopify/theme-store-requirements.md).
+- [ ] Mandatory templates generated (`404.json`, `gift_card.liquid`, `page.contact.json`, `list-collections.json`, `password.json`, `search.json`, etc.).
+- [ ] Section groups (`sections/header-group.json` and `sections/footer-group.json`) implemented.
+- [ ] Custom Liquid section (`sections/custom-liquid.liquid`) and Custom Liquid blocks implemented.
+- [ ] Main product section implements granular blocks and `@app` app blocks.
+- [ ] All storefront URLs use `routes` object dynamically (`routes.root_url`, `routes.cart_url`, etc.).
+- [ ] Core storefront components implemented: `<shopify-account>`, `login_button` (Follow on Shop), pickup availability, Shop Pay Installments, accelerated checkout buttons.
+- [ ] Gift card recipient form and Apple Wallet pass / QR code implemented.
+- [ ] Unit pricing and `cart.taxes_included` indicators displayed.
+- [ ] Settings schema strictly follows sentence case, American English, no ampersands, paired colors, and official Shopify terminology.
+- [ ] Zero deceptive urgency or fake countdown counters in theme code.
+- [ ] Dual-mode attribution observed: zero designer credits/affiliate links in Theme Store mode with unaltered `{{ powered_by_link }}`.
 - [ ] Quantitative Brand DNA (0–100) established before writing code.
 - [ ] Machine-readable Design Contract emitted and respected by all templates.
 - [ ] 5-layer CSS tokens declared in `snippets/css-variables.liquid` and `assets/base.css` without invalid syntax spacing (e.g., `2.5rem`, `150ms`).
-- [ ] Modular scaffolding created (`layout/`, `templates/`, `sections/`, `snippets/`, `assets/`, `config/`, `locales/`).
-- [ ] Complete 12-group `config/settings_schema.json` and `settings_data.json` configured.
 - [ ] Floating single product sticky Add-to-Cart bar activates smoothly on scroll.
 - [ ] Accessible variant swatches update prices, images, and URL parameters dynamically.
 - [ ] Dynamic AJAX cart drawer updates quantities, removes items, and renders via Section Rendering API.
 - [ ] Free shipping progress bar calculates remaining balance and triggers celebration state.
-- [ ] 22-component UI library implemented as needed (Mega Menu, Predictive Search, Quick View, Shoppable Hotspots, Before/After Slider, Size Guide Drawer, Bundles, Video Reels).
 - [ ] Keyboard focus trapped in modal overlays and dismissed via `Escape` key.
 - [ ] Assistive technologies alerted via `aria-live="polite"` region.
 - [ ] Complete JSON-LD SEO structured data rendered in `snippets/json-ld.liquid`.
-- [ ] Mandatory Beeclue Tech attribution link in footer with UTM parameters.
 - [ ] Anti-Generic Design Linter passed (zero AI design clichés, zero emojis).
+- [ ] Minimum 60+ Performance and 90+ Accessibility Lighthouse benchmark achieved.
 - [ ] Design Critic score $\ge 90$ achieved.

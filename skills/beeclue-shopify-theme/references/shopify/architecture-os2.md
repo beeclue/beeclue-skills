@@ -16,58 +16,62 @@ beeclue-{name}-theme/
 │   ├── global.js                     # Accessible focus trap, drawer primitives
 │   └── predictive-search.js          # Live AJAX search component
 ├── config/
-│   ├── settings_schema.json          # Theme customizer settings (colors, fonts, cart)
-│   └── settings_data.json            # Default theme preset values
+│   ├── settings_schema.json          # Theme customizer settings (colors, fonts, cart, theme_info)
+│   └── settings_data.json            # Default theme preset values (NO markets.json!)
 ├── layout/
-│   ├── theme.liquid                  # Primary HTML skeleton & head architecture
-│   └── password.liquid               # Password protection layout
+│   ├── theme.liquid                  # Primary HTML skeleton (lang="{{ request.locale.iso_code }}")
+│   └── password.liquid               # Password protection layout (storefront password form)
 ├── locales/
-│   └── en.default.json               # English translation & copy strings
+│   └── en.default.json               # English translation & copy strings (American English)
 ├── sections/
-│   ├── header-group.json             # Header section group (announcement + header)
-│   ├── footer-group.json             # Footer section group
-│   ├── header.liquid                 # Navigation, sticky glass blur, cart icon
-│   ├── footer.liquid                 # 4-col footer + mandatory Beeclue attribution
-│   ├── announcement-bar.liquid       # Ticker or static value proposition
-│   ├── main-product.liquid           # Master PDP with gallery, variants, CTA
-│   ├── product-sticky-bar.liquid     # Floating sticky Add-to-Cart bar
-│   ├── main-collection.liquid        # Product grid with sorting & facets
-│   ├── cart-drawer.liquid            # Slide-out Ajax cart with shipping meter
-│   ├── main-cart.liquid              # Full fallback cart page
+│   ├── header-group.json             # Header section group (MANDATORY in OS 2.0)
+│   ├── footer-group.json             # Footer section group (MANDATORY in OS 2.0)
+│   ├── header.liquid                 # Navigation, sticky glass blur, cart icon, <shopify-account>
+│   ├── footer.liquid                 # 4-col footer + powered_by_link (no prohibited credits in store mode)
+│   ├── announcement-bar.liquid       # Top bar announcement / value proposition
+│   ├── custom-liquid.liquid          # MANDATORY Custom Liquid section (setting type: "liquid")
+│   ├── main-product.liquid           # Master PDP with granular blocks, @app, Shop Pay, pickup availability
+│   ├── product-sticky-bar.liquid     # Floating sticky Add to Cart bar with variant sync
+│   ├── main-collection.liquid        # Product grid with sorting, pagination, and facets
+│   ├── cart-drawer.liquid            # Slide-out Ajax cart with shipping meter & accelerated checkout
+│   ├── main-cart.liquid              # Full cart page with line discounts & selling plans
 │   ├── main-page.liquid              # Standard narrative page
-│   ├── main-blog.liquid              # Blog listing
-│   ├── main-article.liquid           # Single editorial article
-│   ├── main-404.liquid               # Recoverable 404 page
-│   ├── main-search.liquid            # Search results grid
-│   ├── hero-banner.liquid            # Full-bleed or split editorial hero
+│   ├── main-blog.liquid              # Blog listing (article.excerpt_or_content, pagination)
+│   ├── main-article.liquid           # Single editorial article with comments & published_at
+│   ├── main-404.liquid               # Recoverable 404 page with search and link to home
+│   ├── main-search.liquid            # Search results grid with object_type filter
+│   ├── hero-banner.liquid            # Full-bleed or split editorial hero (slideshow/banner)
 │   ├── featured-collection.liquid    # Curated product catalog carousel/grid
-│   ├── bento-grid.liquid             # Apple-style asymmetric feature matrix
+│   ├── bento-grid.liquid             # Asymmetric feature matrix
 │   ├── image-with-text.liquid        # 60/40 narrative chapter split
 │   ├── rich-text.liquid              # Brand manifesto & typography showcase
 │   ├── testimonials.liquid           # Editorial customer quotes & press ticker
 │   ├── faq-accordion.liquid          # Accessible accordion + FAQPage JSON-LD
 │   └── trust-marquee.liquid          # Continuous CSS brand value ribbon
 ├── snippets/
-│   ├── css-variables.liquid          # 5-layer tokens mapped to settings
-│   ├── product-card.liquid           # Aspect-locked card with hover swap & quick-add
-│   ├── price.liquid                  # Currency formatting & compare-at logic
+│   ├── css-variables.liquid          # 5-layer tokens mapped to settings & font_modify
+│   ├── product-card.liquid           # Aspect-locked card with hover swap, unit price & quick-add
+│   ├── price.liquid                  # Currency formatting, unit price, & compare-at logic
 │   ├── icon.liquid                   # Luxury SVG iconography (1.25px stroke)
 │   ├── json-ld.liquid                # Structured data (Product, Org, Breadcrumbs)
 │   ├── facet-filters.liquid          # Collection filtering checkboxes & pills
-│   └── cart-item.liquid              # Single cart line item row template
+│   ├── gift-card-recipient-form.liquid # MANDATORY gift card recipient fields
+│   ├── pickup-availability.liquid    # MANDATORY store pickup availability snippet
+│   └── cart-item.liquid              # Single cart line item row template with discounts & plans
 └── templates/
-    ├── index.json                    # Homepage section order & configuration
-    ├── product.json                  # Product page layout & block hierarchy
-    ├── collection.json               # Collection template
-    ├── cart.json                     # Dedicated cart template
+    ├── index.json                    # Home page section order & configuration
+    ├── product.json                  # Product page layout & modular block hierarchy
+    ├── collection.json               # Collection template with faceted filters
+    ├── list-collections.json         # MANDATORY list collections template
+    ├── cart.json                     # Dedicated cart template with discounts & notes
     ├── page.json                     # Generic page template
-    ├── page.about.json               # Bespoke about page template
-    ├── page.contact.json             # Contact page template
-    ├── page.faq.json                 # FAQ accordion template
+    ├── page.contact.json             # MANDATORY contact page template
     ├── blog.json                     # Blog template
     ├── article.json                  # Article template
     ├── 404.json                      # 404 template
     ├── search.json                   # Search template
+    ├── password.json                 # Password template
+    ├── gift_card.liquid              # MANDATORY gift card template (Apple Wallet + QR code)
     └── customers/                    # Customer account templates
         ├── account.json
         ├── login.json
@@ -174,3 +178,13 @@ fetch('/cart/add.js', {
 });
 ```
 This guarantees that server-side Liquid logic (free shipping progress, tax notices, line item totals) stays perfectly synced without duplicating business logic in JavaScript.
+
+---
+
+## 6. Shopify Theme Store Architecture Compliance
+
+Per [Shopify Theme Store Requirements](theme-store-requirements.md):
+- **Template Completeness**: Must provide all required JSON templates (`404.json`, `article.json`, `blog.json`, `cart.json`, `collection.json`, `index.json`, `list-collections.json`, `page.json`, `page.contact.json`, `password.json`, `product.json`, `search.json`) and `gift_card.liquid`.
+- **Section Groups**: Header and footer must use `sections/header-group.json` and `sections/footer-group.json`.
+- **Custom Liquid Section & Blocks**: Must include `sections/custom-liquid.liquid` (setting `type: "liquid"`) and Custom Liquid blocks in main product and featured product sections.
+- **Prohibited Files**: Do NOT include `config/markets.json` or `templates/robots.txt.liquid` in theme submissions.

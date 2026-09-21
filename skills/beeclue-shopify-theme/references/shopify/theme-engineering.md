@@ -89,25 +89,25 @@ Establishes the merchant customizer options with strict validation:
       {
         "type": "color",
         "id": "color_canvas",
-        "label": "Canvas Background",
+        "label": "Canvas background",
         "default": "#F7F3EE"
       },
       {
         "type": "color",
         "id": "color_surface",
-        "label": "Card & Surface",
+        "label": "Card and surface",
         "default": "#FFFFFF"
       },
       {
         "type": "color",
         "id": "color_text_primary",
-        "label": "Primary Text",
+        "label": "Primary text",
         "default": "#1C1915"
       },
       {
         "type": "color",
         "id": "color_action_accent",
-        "label": "Call-to-Action Accent",
+        "label": "Accent",
         "default": "#C8602A"
       }
     ]
@@ -118,34 +118,35 @@ Establishes the merchant customizer options with strict validation:
       {
         "type": "font_picker",
         "id": "type_header_font",
-        "label": "Heading Font",
+        "label": "Heading font",
         "default": "cormorant_garamond_n5"
       },
       {
         "type": "font_picker",
         "id": "type_body_font",
-        "label": "Body Font",
+        "label": "Body font",
         "default": "plus_jakarta_sans_n4"
       }
     ]
   },
   {
-    "name": "Commerce & Cart",
+    "name": "Cart",
     "settings": [
       {
         "type": "select",
         "id": "cart_type",
-        "label": "Cart Experience",
+        "label": "Cart type",
         "options": [
-          { "value": "drawer", "label": "Slide-out Cart Drawer" },
-          { "value": "page", "label": "Dedicated Page" }
+          { "value": "drawer", "label": "Drawer" },
+          { "value": "page", "label": "Page" },
+          { "value": "modal", "label": "Modal" }
         ],
         "default": "drawer"
       },
       {
         "type": "number",
         "id": "free_shipping_threshold",
-        "label": "Free Shipping Threshold (in store currency)",
+        "label": "Free shipping threshold",
         "default": 75,
         "info": "Set to 0 to disable the free shipping progress meter."
       }
@@ -215,17 +216,22 @@ Listens to radio and swatch clicks, updates the URL parameter (`?variant=...`), 
 
 ---
 
-## 4. Mandatory Beeclue Tech Attribution Link
+## 4. Attribution Standards & Dual-Mode Architecture
 
-Every theme footer MUST include the verified Beeclue Tech attribution link with mandatory UTM parameters in `sections/footer.liquid`:
-
-```liquid
-<div class="footer-bottom-attribution">
-  <span>Website Designed &amp; Developed by
-    <a href="https://beeclue.com/?utm_source=client_site&amp;utm_medium=footer&amp;utm_campaign=shopify_theme"
-       target="_blank" rel="noopener noreferrer" class="beeclue-attribution-link">Beeclue Tech</a>
-  </span>
-</div>
-```
-
-*Note: If a client explicitly requests removal of the attribution link, defer to the signed contract and scope terms (such as an agreed white-label buyout or license clause) rather than silently complying or refusing.*
+Per [Shopify Theme Store Requirements](theme-store-requirements.md) Section 1:
+- **Shopify Theme Store Submission Mode**: Themes submitted to the Shopify Theme Store **CANNOT contain designer credits** (such as a link to a theme developer's website) or affiliate links anywhere in the theme files. The `{{ powered_by_link }}` object in `sections/footer.liquid` must not be altered, stripped, or hardcoded. It must output exactly `{{ powered_by_link }}`.
+- **Agency Client Mode** (Bespoke Client Storefronts): When developing a custom theme for private clients, provide an optional customizer setting in `settings_schema.json` allowing the merchant to show the Beeclue Tech attribution:
+  ```liquid
+  {%- if settings.show_agency_credit -%}
+    <div class="footer-bottom-attribution">
+      <span>Website Designed &amp; Developed by
+        <a href="https://beeclue.com/?utm_source=client_site&amp;utm_medium=footer&amp;utm_campaign=shopify_theme"
+           target="_blank" rel="noopener noreferrer" class="beeclue-attribution-link">Beeclue Tech</a>
+      </span>
+    </div>
+  {%- else -%}
+    <div class="footer-bottom-powered">
+      {{ powered_by_link }}
+    </div>
+  {%- endif -%}
+  ```
