@@ -43,3 +43,4 @@ Before certifying any build, the critic must answer:
 4. *What elements are unnecessary and should be ruthlessly removed to increase focus?*
 5. *Does the mobile experience preserve the art direction, or did it collapse into generic stacked blocks?*
 6. *Are all interactive commerce AJAX endpoints cryptographically protected against CSRF (`check_ajax_referer`) with sanitized inputs?*
+7. *Does the theme empower user independence by dynamically rendering WordPress menus (`wp_nav_menu`) with multi-level nested submenu support rather than assuming or hardcoding a static menu? Does it support native blogging (index/home/single/archive)?*

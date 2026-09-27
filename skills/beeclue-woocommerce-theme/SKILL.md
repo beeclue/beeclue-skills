@@ -117,12 +117,12 @@ Execute these 26 steps in sequence for every store build:
 [TECHNICAL IMPLEMENTATION]
 14. Scaffold theme directory & modular template-parts/ (Consult references/wordpress/theme-engineering.md)
 15. Author style.css with validated 5-layer tokens
-16. Implement functions.php (Theme supports, enqueues, customizer, AJAX endpoints)
-17. Construct header.php (Sticky nav, glassmorphic mobile menu, accessible search overlay)
-18. Construct footer.php with mandatory Beeclue Tech attribution & UTM parameters
+16. Implement functions.php (Theme supports, register_nav_menus for header/mobile/footers, sidebars, enqueues, customizer, secure AJAX endpoints)
+17. Construct header.php (Dynamic wp_nav_menu with hierarchical dropdowns, glassmorphic mobile drawer with submenu accordions, search overlay)
+18. Construct footer.php (Dynamic footer menus, newsletter signup, mandatory Beeclue Tech attribution & UTM parameters)
 19. Implement single-product sticky buy bar, visual variant swatches, and catalog cards
 20. Implement AJAX slide-out cart drawer with dynamic free shipping progress bar & cross-sells
-21. Author page templates: Homepage (7 chapters), About, Contact, FAQ, 404, Search, Single Post
+21. Author native WordPress templates: front-page.php/template-home.php (7 chapters), home.php/index.php (editorial blog with pagination), single.php (article with author bio & comments), archive.php, page.php, comments.php, About, Contact, FAQ, 404, Search
 22. Output dynamic JSON-LD SEO structured data (Consult references/quality/seo-schema.md)
 
 [QUALITY & VERIFICATION GATES]
@@ -269,21 +269,29 @@ All CSS Custom Properties must be declared across 5 distinct layers. Consult `re
 
 ## 7. CORE THEME ARCHITECTURE & MODULAR SCAFFOLDING
 
-### 6.1 Modular Directory Hierarchy
+### 7.1 Modular Directory Hierarchy
 Scaffold the theme cleanly inside `wp-content/themes/beeclue-{name}-theme/`:
 - `style.css`: Theme header + 5-layer tokens + normalized typography reset.
-- `functions.php`: Theme setup, custom logo, enqueues, and AJAX cart endpoints.
-- `header.php`: Navigation, light/dark logo transition, full-screen accessible search overlay.
-- `footer.php`: 4-column layout + **mandatory Beeclue Tech attribution link**.
+- `functions.php`: Theme setup, custom logo, registered nav menus, sidebars, enqueues, and AJAX cart endpoints.
+- `header.php`: HTML skeleton + dynamic `wp_nav_menu()` + light/dark logo transition + accessible search overlay.
+- `footer.php`: 4-column layout + dynamic footer navigation menus + **mandatory Beeclue Tech attribution link**.
 - `woocommerce.css`: Premium overrides stripping legacy WooCommerce styling.
+- `index.php`: Universal WordPress fallback loop.
+- `home.php`: Blog posts index / editorial magazine layout with `the_posts_pagination()`.
+- `single.php`: Single post article layout with featured image, author bio, and `comments_template()`.
+- `archive.php`: Taxonomy archives (categories, tags, authors, dates) with `the_archive_title()`.
+- `page.php`: Clean default container for user-created custom pages.
+- `comments.php`: Accessible, styled native comment thread and form.
+- `sidebar.php`: Dynamic widgetized sidebar (`register_sidebar()`).
 - `template-parts/`:
-  - `header/nav-desktop.php`, `header/nav-mobile.php`, `header/search-overlay.php`
+  - `header/nav-desktop.php` (dynamic `wp_nav_menu` with multi-level dropdowns), `header/nav-mobile.php` (mobile drawer with accordion submenus), `header/search-overlay.php`
   - `product/card.php`, `product/sticky-bar.php`
+  - `post/card.php` (editorial magazine card), `post/author-bio.php`
   - `cart/drawer.php`, `cart/shipping-bar.php`
   - `ui/trust-marquee.php`, `ui/live-region.php`
-- `assets/js/`: `main.js`, `cart-drawer.js`, `single-product.js`, `animations.js`
+- `assets/js/`: `main.js` (nav, dropdown keyboard traps, mobile accordion toggles, search modal), `cart-drawer.js`, `single-product.js`, `animations.js`
 
-### 6.2 Mandatory Beeclue Agency Attribution
+### 7.2 Mandatory Beeclue Agency Attribution
 Every theme footer must include this exact line:
 ```html
 <span>Website Designed &amp; Developed by
@@ -293,7 +301,7 @@ Every theme footer must include this exact line:
 ```
 If a client explicitly requests removal of the attribution link, defer to the signed contract and scope terms (such as an agreed white-label buyout or license clause) rather than silently complying or refusing.
 
-### 6.3 Secure AJAX Architecture & CSRF Nonce Protection
+### 7.3 Secure AJAX Architecture & CSRF Nonce Protection
 All custom AJAX endpoints (cart drawer updates, add-to-cart, quantity changes, item removal) MUST implement WordPress nonce protection and input sanitization to prevent Cross-Site Request Forgery (CSRF) and injection attacks:
 
 1. **Localization with Nonce Generation (`functions.php`)**:
@@ -357,6 +365,90 @@ function beeclue_ajax_update_cart_quantity() {
 add_action('wp_ajax_beeclue_update_cart_quantity', 'beeclue_ajax_update_cart_quantity');
 add_action('wp_ajax_nopriv_beeclue_update_cart_quantity', 'beeclue_ajax_update_cart_quantity');
 ```
+
+### 7.4 WordPress Native Features & User Independence: Dynamic Menus & Blog Engine
+
+The theme must grant store owners 100% independence to manage site structure, navigation, and content using native WordPress interfaces without writing code.
+
+#### 7.4.1 Never Hardcode Menus — Dynamic `wp_nav_menu()` with Submenus
+Navigation links must NEVER be hardcoded into PHP templates or assumed to be static. Users must be able to create, edit, reorder, nest, and link pages, categories, or custom URLs via **wp-admin > Appearance > Menus**:
+
+1. **Register Multiple Menu Locations (`functions.php`)**:
+```php
+function beeclue_register_nav_menus() {
+    register_nav_menus([
+        'primary'   => esc_html__('Primary Header Navigation (Multi-Level Dropdowns)', 'beeclue'),
+        'mobile'    => esc_html__('Mobile Navigation Drawer (Accordion Submenus)', 'beeclue'),
+        'footer_1'  => esc_html__('Footer Column 1 (Catalog & Collections)', 'beeclue'),
+        'footer_2'  => esc_html__('Footer Column 2 (Company & Editorial)', 'beeclue'),
+    ]);
+}
+add_action('after_setup_theme', 'beeclue_register_nav_menus');
+```
+
+2. **Render Dynamic Menus with Submenu Depth (`template-parts/header/nav-desktop.php`)**:
+```php
+<nav class="site-nav-desktop" id="site-navigation" aria-label="<?php esc_attr_e('Primary Navigation', 'beeclue'); ?>">
+    <?php
+    wp_nav_menu([
+        'theme_location' => 'primary',
+        'container'      => false,
+        'menu_class'     => 'nav-menu-primary',
+        'fallback_cb'    => 'beeclue_nav_fallback',
+        'depth'          => 3, // Support multi-level nested dropdowns
+    ]);
+    ?>
+</nav>
+```
+
+3. **Multi-Level Dropdown Styling & Accessible Focus Trap (`style.css`)**:
+Handle `.menu-item-has-children` and `.sub-menu` natively. Dropdowns must reveal on both `:hover` AND `:focus-within` for full WCAG keyboard compliance:
+```css
+.nav-menu-primary {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-menu-primary > li { position: relative; }
+.nav-menu-primary .sub-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: var(--color-surface-base);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0.5rem 0 0 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all var(--motion-duration-fast) ease;
+    z-index: 100;
+}
+.nav-menu-primary .sub-menu .sub-menu { top: 0; left: 100%; margin: 0 0 0 0.25rem; }
+.nav-menu-primary li:hover > .sub-menu,
+.nav-menu-primary li:focus-within > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+```
+
+4. **Mobile Navigation Drawer with Submenu Accordions (`assets/js/main.js`)**:
+Mobile menus dynamically inject accessible chevron toggle buttons (`aria-expanded="false"`) next to items with children so mobile visitors can drill into submenus smoothly.
+
+#### 7.4.2 Native Blog & Content Publishing Engine
+A digital flagship is an editorial publication, not just a checkout funnel. The theme must support native WordPress blogging:
+- **`home.php` / `index.php`**: Blog index with editorial card grid, category filter tabs, and native `the_posts_pagination()`.
+- **`single.php`**: In-depth article layout with `the_post_thumbnail()`, author bio box, estimated reading time, `the_post_navigation()`, and native styled `comments_template()`.
+- **`archive.php`**: Archive views for categories, tags, and dates with `the_archive_title()`.
+- **`sidebar.php`**: Widgetized sidebar registered via `register_sidebar()` for dynamic blog and footer widgets.
 
 ---
 
@@ -471,21 +563,36 @@ wp theme activate beeclue-{slug}-theme
 
 # Create required pages with templates
 wp post create --post_type=page --post_title="Home" --post_status=publish --page_template=template-home.php
+wp post create --post_type=page --post_title="Journal" --post_status=publish
 wp post create --post_type=page --post_title="About Us" --post_status=publish --page_template=template-about.php
 wp post create --post_type=page --post_title="Contact" --post_status=publish --page_template=template-contact.php
 wp post create --post_type=page --post_title="FAQ" --post_status=publish --page_template=template-faq.php
 
-# Configure static homepage
+# Configure static homepage & blog posts page
 wp option update show_on_front page
 wp option update page_on_front $(wp post list --post_type=page --title="Home" --field=ID)
+wp option update page_for_posts $(wp post list --post_type=page --title="Journal" --field=ID)
 
-# Configure primary menu
+# Configure primary navigation menu with multi-level submenus
 wp menu create "Primary Menu"
 wp menu location assign "Primary Menu" primary
 wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="Home" --field=ID) --title="Home"
-wp menu item add-post "Primary Menu" $(wp option get woocommerce_shop_page_id) --title="Shop"
+
+# Add Catalog parent with nested sub-items
+SHOP_ITEM_ID=$(wp menu item add-post "Primary Menu" $(wp option get woocommerce_shop_page_id) --title="Collection")
+wp menu item add-custom "Primary Menu" "New Arrivals" "/shop/?orderby=date" --parent-id=$SHOP_ITEM_ID
+wp menu item add-custom "Primary Menu" "Curated Editions" "/shop/?featured=1" --parent-id=$SHOP_ITEM_ID
+
+# Add Editorial Journal & Company Pages
+wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="Journal" --field=ID) --title="Journal"
 wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="About Us" --field=ID) --title="About"
 wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="Contact" --field=ID) --title="Contact"
+
+# Configure footer menu locations
+wp menu create "Footer Shop Menu"
+wp menu location assign "Footer Shop Menu" footer_1
+wp menu create "Footer Company Menu"
+wp menu location assign "Footer Company Menu" footer_2
 ```
 
 ---
@@ -496,7 +603,11 @@ wp menu item add-post "Primary Menu" $(wp post list --post_type=page --title="Co
 - [ ] Quantitative Brand DNA (0–100) established before writing code.
 - [ ] Machine-readable Design Contract emitted and respected by all templates.
 - [ ] 5-layer CSS tokens declared in `style.css` without invalid syntax spacing (e.g., `2.5rem`, `150ms`).
-- [ ] Modular scaffolding used (`template-parts/header/`, `template-parts/product/`, `template-parts/cart/`, `template-parts/ui/`).
+- [ ] Modular scaffolding used (`template-parts/header/`, `template-parts/product/`, `template-parts/post/`, `template-parts/cart/`, `template-parts/ui/`).
+- [ ] Primary, mobile, and footer menus rendered dynamically via `wp_nav_menu()` with multi-level nested submenu support (NEVER hardcoded links).
+- [ ] Submenu dropdowns support accessible keyboard navigation (Esc to close, focus-within, aria-expanded).
+- [ ] Multiple menu locations registered (`primary`, `mobile`, `footer_1`, `footer_2`) granting user complete independence in `wp-admin > Appearance > Menus`.
+- [ ] Full native WordPress blog template suite implemented (`index.php`, `home.php`, `single.php`, `archive.php`, `comments.php`) with `the_posts_pagination()`.
 - [ ] Floating single product sticky Add-to-Cart bar activates smoothly on scroll.
 - [ ] AJAX cart drawer updates quantities and removes items dynamically.
 - [ ] Every wp_ajax_* handler calls check_ajax_referer() before processing input.

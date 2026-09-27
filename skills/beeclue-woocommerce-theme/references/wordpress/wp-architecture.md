@@ -32,10 +32,17 @@ Is it purely presentational, layout, or micro-interaction?
 | **Cart Drawer Markup & Scripts** | Theme (`template-parts/cart/drawer.php`) | Frontend UX presentation layer. |
 | **Payment Gateways & Shipping Calculators** | Dedicated WooCommerce Plugins | Security, webhook handling, and compliance. |
 | **Customizer Settings (Shipping Threshold)** | Theme (`inc/customizer.php`) | Theme-specific configuration options. |
+| **Navigation Menus (Header, Mobile, Footers)** | WordPress Core (`Appearance > Menus`) | User independence to create, edit, nest, and rearrange menus. |
+| **Blog & Article Content** | WordPress Core (`home.php`, `single.php`) | Dynamic publishing engine, categories, comments, and archives. |
+| **Sidebars & Footer Widget Blocks** | WordPress Core (`Appearance > Widgets`) | Flexible content blocks managed without touching theme code. |
 
 ---
 
-## 3. The Anti-Bloat Rules
-1. **Never Bundle Heavy External JS Libraries**: No GSAP, no AOS, no full jQuery UI libraries. Use pure CSS `@keyframes` and native browser `IntersectionObserver`.
-2. **Never Hardcode Domain URLs**: Always use `home_url('/')`, `wc_get_cart_url()`, and `get_template_directory_uri()`.
-3. **Never Output Unescaped Variables**: Always wrap dynamic output in `esc_html()`, `esc_attr()`, `esc_url()`, or `wp_kses_post()`.
+## 3. The Core WordPress Principles & Anti-Bloat Rules
+
+1. **Never Hardcode Navigation Links or Assume Single Menus**: Navigation MUST be dynamically driven by `register_nav_menus()` and rendered via `wp_nav_menu()` with multi-level submenu dropdown support (`depth => 3`). Never assume a fixed structure; give the user 100% independence to manage menus, categories, and custom links in `wp-admin > Appearance > Menus`.
+2. **Embrace Native WordPress Publishing (Blogs & Archives)**: A flagship theme is not a rigid brochure. It must support full editorial storytelling by implementing `index.php`, `home.php`, `single.php`, `archive.php`, `comments.php`, and `sidebar.php` with native pagination (`the_posts_pagination()`).
+3. **Never Bundle Heavy External JS Libraries**: No GSAP, no AOS, no full jQuery UI libraries. Use pure CSS `@keyframes` and native browser `IntersectionObserver`.
+4. **Never Hardcode Domain URLs**: Always use `home_url('/')`, `wc_get_cart_url()`, and `get_template_directory_uri()`.
+5. **Never Output Unescaped Variables**: Always wrap dynamic output in `esc_html()`, `esc_attr()`, `esc_url()`, or `wp_kses_post()`.
+6. **Support Standard Theme Capabilities**: Always declare `add_theme_support()` for `title-tag`, `post-thumbnails`, `custom-logo`, `html5`, and WooCommerce gallery tools.
