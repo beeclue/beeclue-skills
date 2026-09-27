@@ -465,6 +465,16 @@ A digital flagship is an editorial publication, not just a checkout funnel. The 
 - **`archive.php`**: Archive views for categories, tags, and dates with `the_archive_title()`.
 - **`sidebar.php`**: Widgetized sidebar registered via `register_sidebar()` for dynamic blog and footer widgets.
 
+### 7.5 Granular UI Component Toggles in Theme Settings (`inc/customizer.php`)
+Every visual UI component across catalog grids, single products, cart drawers, and headers must have an independent toggle in **Appearance > Customize > Theme Settings**, allowing store owners to control layout density per screen:
+- **Product Grid vs. Details Screen Control**: A store owner must be able to turn OFF reviews/ratings on catalog product cards (`beeclue_catalog_show_rating = false`) while keeping reviews fully visible on the single product details page (`beeclue_single_show_reviews = true`).
+- **Conditional Template Wrapping**: Templates must check `get_theme_mod('setting_key', default)` before rendering UI components:
+  - **Catalog Grid Cards (`content-product.php`)**: star ratings (`beeclue_catalog_show_rating`), hover secondary images (`beeclue_catalog_show_secondary_image`), quick add-to-cart button (`beeclue_catalog_show_quick_add`), category eyebrow tag (`beeclue_catalog_show_category`), sale/stock badges (`beeclue_catalog_show_badges`).
+  - **Single Product Page (`content-single-product.php`)**: customer reviews & rating summary (`beeclue_single_show_reviews`), floating sticky add-to-cart bar (`beeclue_single_show_sticky_bar`), SKU and taxonomy meta (`beeclue_single_show_sku`), related and cross-sell products (`beeclue_single_show_related`).
+  - **Cart Drawer (`drawer.php`)**: free shipping threshold progress meter (`beeclue_cart_show_shipping_meter`), recommended in-drawer cross-sells (`beeclue_cart_show_cross_sells`).
+  - **Header & Navigation (`header.php`)**: top announcement ticker bar (`beeclue_header_show_announcement`), search modal trigger (`beeclue_header_show_search`).
+  - **Blog Articles (`single.php`)**: author biography card (`beeclue_blog_show_author`), estimated reading time (`beeclue_blog_show_reading_time`).
+
 ---
 
 ## 8. HIGH-CONVERTING E-COMMERCE ENGINEERING
@@ -620,6 +630,7 @@ wp menu location assign "Footer Company Menu" footer_2
 - [ ] 5-layer CSS tokens declared in `style.css` without invalid syntax spacing (e.g., `2.5rem`, `150ms`).
 - [ ] Modular scaffolding used (`template-parts/header/`, `template-parts/product/`, `template-parts/post/`, `template-parts/cart/`, `template-parts/ui/`).
 - [ ] Pure UI Architecture enforced: Every data source originates dynamically from WordPress / WooCommerce Core (category name, hero image, description, subcategories, menus, posts, customizer); zero hardcoded content or mock data in templates.
+- [ ] Granular UI settings: Every UI element (reviews on grid vs details, sticky bar, swatches, badges, shipping meter, author bio) has an independent toggle in Theme Customizer (`inc/customizer.php`) and is conditionally wrapped with `get_theme_mod()`.
 - [ ] Primary, mobile, and footer menus rendered dynamically via `wp_nav_menu()` with multi-level nested submenu support (NEVER hardcoded links).
 - [ ] Submenu dropdowns support accessible keyboard navigation (Esc to close, focus-within, aria-expanded).
 - [ ] Multiple menu locations registered (`primary`, `mobile`, `footer_1`, `footer_2`) granting user complete independence in `wp-admin > Appearance > Menus`.

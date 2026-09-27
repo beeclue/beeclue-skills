@@ -674,5 +674,311 @@ Every element rendered on the single product page binds directly to WooCommerce 
 
 The theme wraps these standard methods with responsive gallery sliders, zoom overlays, pill swatches, and the floating sticky Add-to-Cart bar.
 
+---
+
+## 7. Granular UI Component Toggles via Theme Settings (`inc/customizer.php`)
+
+> [!IMPORTANT]
+> **Complete UI Control for Store Owners**:
+> Every visual UI component across catalog grids, product details, cart drawers, headers, and blog templates must have an independent toggle in **Appearance > Customize > Theme Settings**.
+> **Example**: A store owner must be able to turn OFF reviews on the catalog product grid while keeping reviews fully visible on the single product details page. Templates must NEVER hardcode UI elements without wrapping them in `get_theme_mod()`.
+
+### 7.1 Customizer Settings Registration (`inc/customizer.php`)
+```php
+<?php
+/**
+ * Theme Customizer: Granular UI Component Visibility Controls
+ * Location: inc/customizer.php
+ */
+
+function beeclue_customize_register($wp_customize) {
+
+    // ─────────────────────────────────────────────────────────────
+    // PANEL: THEME SETTINGS & UI CONTROLS
+    // ─────────────────────────────────────────────────────────────
+    $wp_customize->add_panel('beeclue_theme_settings_panel', [
+        'title'       => esc_html__('BeeClue Theme Settings', 'beeclue'),
+        'description' => esc_html__('Enable or disable individual UI elements across all store templates.', 'beeclue'),
+        'priority'    => 30,
+    ]);
+
+    // ─────────────────────────────────────────────────────────────
+    // SECTION 1: PRODUCT CATALOG & GRID UI
+    // ─────────────────────────────────────────────────────────────
+    $wp_customize->add_section('beeclue_catalog_section', [
+        'title' => esc_html__('Product Catalog & Grid', 'beeclue'),
+        'panel' => 'beeclue_theme_settings_panel',
+    ]);
+
+    // Toggle: Reviews / Star Rating on Grid (Default: false for clean minimal grids)
+    $wp_customize->add_setting('beeclue_catalog_show_rating', [
+        'default'           => false,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ]);
+    $wp_customize->add_control('beeclue_catalog_show_rating', [
+        'label'       => esc_html__('Show Star Ratings on Product Grid', 'beeclue'),
+        'description' => esc_html__('Toggle customer review stars on archive cards without affecting single product details.', 'beeclue'),
+        'section'     => 'beeclue_catalog_section',
+        'type'        => 'checkbox',
+    ]);
+
+    // Toggle: Secondary Hover Image
+    $wp_customize->add_setting('beeclue_catalog_show_secondary_image', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_catalog_show_secondary_image', [
+        'label'   => esc_html__('Show Secondary Image on Hover', 'beeclue'),
+        'section' => 'beeclue_catalog_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: Quick Add-to-Cart Button
+    $wp_customize->add_setting('beeclue_catalog_show_quick_add', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_catalog_show_quick_add', [
+        'label'   => esc_html__('Show Quick Add-to-Cart Button on Cards', 'beeclue'),
+        'section' => 'beeclue_catalog_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: Category Label above Product Title
+    $wp_customize->add_setting('beeclue_catalog_show_category', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_catalog_show_category', [
+        'label'   => esc_html__('Show Category Eyebrow above Title', 'beeclue'),
+        'section' => 'beeclue_catalog_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: Sale / Stock Badges on Cards
+    $wp_customize->add_setting('beeclue_catalog_show_badges', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_catalog_show_badges', [
+        'label'   => esc_html__('Show Sale & Stock Badges on Grid', 'beeclue'),
+        'section' => 'beeclue_catalog_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // ─────────────────────────────────────────────────────────────
+    // SECTION 2: SINGLE PRODUCT DETAILS UI
+    // ─────────────────────────────────────────────────────────────
+    $wp_customize->add_section('beeclue_single_product_section', [
+        'title' => esc_html__('Single Product Details', 'beeclue'),
+        'panel' => 'beeclue_theme_settings_panel',
+    ]);
+
+    // Toggle: Reviews on Single Product (Default: true)
+    $wp_customize->add_setting('beeclue_single_show_reviews', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ]);
+    $wp_customize->add_control('beeclue_single_show_reviews', [
+        'label'       => esc_html__('Show Customer Reviews & Rating on Product Page', 'beeclue'),
+        'description' => esc_html__('Display the full rating summary and review tab on product details.', 'beeclue'),
+        'section'     => 'beeclue_single_product_section',
+        'type'        => 'checkbox',
+    ]);
+
+    // Toggle: Floating Sticky Add-to-Cart Bar
+    $wp_customize->add_setting('beeclue_single_show_sticky_bar', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_single_show_sticky_bar', [
+        'label'   => esc_html__('Enable Floating Sticky Add-to-Cart Bar', 'beeclue'),
+        'section' => 'beeclue_single_product_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: SKU & Meta Details
+    $wp_customize->add_setting('beeclue_single_show_sku', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_single_show_sku', [
+        'label'   => esc_html__('Show SKU and Product Metadata', 'beeclue'),
+        'section' => 'beeclue_single_product_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: Related & Upsell Products
+    $wp_customize->add_setting('beeclue_single_show_related', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_single_show_related', [
+        'label'   => esc_html__('Show Related & Cross-Sell Products', 'beeclue'),
+        'section' => 'beeclue_single_product_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // ─────────────────────────────────────────────────────────────
+    // SECTION 3: CART DRAWER UI
+    // ─────────────────────────────────────────────────────────────
+    $wp_customize->add_section('beeclue_cart_section', [
+        'title' => esc_html__('Cart Drawer', 'beeclue'),
+        'panel' => 'beeclue_theme_settings_panel',
+    ]);
+
+    // Toggle: Free Shipping Progress Meter
+    $wp_customize->add_setting('beeclue_cart_show_shipping_meter', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_cart_show_shipping_meter', [
+        'label'   => esc_html__('Show Free Shipping Progress Bar', 'beeclue'),
+        'section' => 'beeclue_cart_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: In-Drawer Upsells / Cross-Sells
+    $wp_customize->add_setting('beeclue_cart_show_cross_sells', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_cart_show_cross_sells', [
+        'label'   => esc_html__('Show In-Drawer Recommended Add-ons', 'beeclue'),
+        'section' => 'beeclue_cart_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // ─────────────────────────────────────────────────────────────
+    // SECTION 4: HEADER & ANNOUNCEMENT BAR
+    // ─────────────────────────────────────────────────────────────
+    $wp_customize->add_section('beeclue_header_section', [
+        'title' => esc_html__('Header & Announcement', 'beeclue'),
+        'panel' => 'beeclue_theme_settings_panel',
+    ]);
+
+    // Toggle: Announcement Ticker Bar
+    $wp_customize->add_setting('beeclue_header_show_announcement', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_header_show_announcement', [
+        'label'   => esc_html__('Show Announcement Bar', 'beeclue'),
+        'section' => 'beeclue_header_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: Search Icon / Trigger in Header
+    $wp_customize->add_setting('beeclue_header_show_search', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_header_show_search', [
+        'label'   => esc_html__('Show Search Icon in Header', 'beeclue'),
+        'section' => 'beeclue_header_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // ─────────────────────────────────────────────────────────────
+    // SECTION 5: BLOG & EDITORIAL UI
+    // ─────────────────────────────────────────────────────────────
+    $wp_customize->add_section('beeclue_blog_section', [
+        'title' => esc_html__('Blog & Editorial Journal', 'beeclue'),
+        'panel' => 'beeclue_theme_settings_panel',
+    ]);
+
+    // Toggle: Post Author Bio Card
+    $wp_customize->add_setting('beeclue_blog_show_author', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_blog_show_author', [
+        'label'   => esc_html__('Show Author Bio Card on Single Articles', 'beeclue'),
+        'section' => 'beeclue_blog_section',
+        'type'    => 'checkbox',
+    ]);
+
+    // Toggle: Reading Time
+    $wp_customize->add_setting('beeclue_blog_show_reading_time', [
+        'default'           => true,
+        'sanitize_callback' => 'beeclue_sanitize_checkbox',
+    ]);
+    $wp_customize->add_control('beeclue_blog_show_reading_time', [
+        'label'   => esc_html__('Show Estimated Reading Time', 'beeclue'),
+        'section' => 'beeclue_blog_section',
+        'type'    => 'checkbox',
+    ]);
+}
+add_action('customize_register', 'beeclue_customize_register');
+
+/**
+ * Sanitization helper for Customizer checkbox settings
+ */
+function beeclue_sanitize_checkbox($checked) {
+    return (isset($checked) && true === (bool) $checked);
+}
+```
+
+### 7.2 Template Implementation: Conditional UI Wrappers
+
+#### Product Card on Grid (`woocommerce/content-product.php`):
+Notice how reviews are wrapped in `beeclue_catalog_show_rating`:
+```php
+<li <?php wc_product_class('product-card', $product); ?>>
+    <div class="product-card-media">
+        <?php echo $product->get_image('woocommerce_thumbnail'); ?>
+
+        <?php if (get_theme_mod('beeclue_catalog_show_badges', true) && $product->is_on_sale()) : ?>
+            <span class="product-badge badge-sale"><?php esc_html_e('Sale', 'beeclue'); ?></span>
+        <?php endif; ?>
+    </div>
+
+    <div class="product-card-body">
+        <?php if (get_theme_mod('beeclue_catalog_show_category', true)) : ?>
+            <span class="product-card-eyebrow"><?php echo esc_html(wc_get_product_category_list($product->get_id(), ', ')); ?></span>
+        <?php endif; ?>
+
+        <h3 class="product-card-title">
+            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+        </h3>
+
+        <!-- Review stars only show if enabled in Theme Settings for catalog grid -->
+        <?php if (get_theme_mod('beeclue_catalog_show_rating', false)) : ?>
+            <div class="product-card-rating">
+                <?php woocommerce_template_loop_rating(); ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="product-card-price">
+            <?php woocommerce_template_loop_price(); ?>
+        </div>
+
+        <?php if (get_theme_mod('beeclue_catalog_show_quick_add', true)) : ?>
+            <div class="product-card-actions">
+                <?php woocommerce_template_loop_add_to_cart(); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</li>
+```
+
+#### Single Product Details (`woocommerce/single-product/rating.php` or `content-single-product.php`):
+Reviews on details page are governed by their own independent setting:
+```php
+<?php
+// On single product page: Independent setting allows reviews here even if disabled on grid
+if (get_theme_mod('beeclue_single_show_reviews', true) && comments_open()) :
+    woocommerce_template_single_rating();
+endif;
+?>
+
+<?php if (get_theme_mod('beeclue_single_show_sticky_bar', true)) : ?>
+    <?php get_template_part('template-parts/product/sticky-bar'); ?>
+<?php endif; ?>
+```
+
+
 
 
