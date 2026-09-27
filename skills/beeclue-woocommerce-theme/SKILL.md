@@ -366,11 +366,23 @@ add_action('wp_ajax_beeclue_update_cart_quantity', 'beeclue_ajax_update_cart_qua
 add_action('wp_ajax_nopriv_beeclue_update_cart_quantity', 'beeclue_ajax_update_cart_quantity');
 ```
 
-### 7.4 WordPress Native Features & User Independence: Dynamic Menus & Blog Engine
+### 7.4 Pure UI Architecture & Dynamic WordPress Data Sourcing (Zero Hardcoding Rule)
 
-The theme must grant store owners 100% independence to manage site structure, navigation, and content using native WordPress interfaces without writing code.
+> [!IMPORTANT]
+> **Data Sovereignty vs. Pure UI Engine**:
+> - **WordPress & WooCommerce Core = Sole Data Source**: All content—product category titles, category hero images, descriptions, child terms/subcategories, navigation trees, blog articles, customizer settings, product attributes, prices—originates 100% from WordPress Core data. Templates must **NEVER** hardcode mock strings, static image URLs, or hardcoded navigation links. The client has complete independence to update anything in `wp-admin`.
+> - **Theme = Pure UI & Interaction Layer**: The theme's exclusive role is crafting high-end responsive layouts, 5-layer design token styling, fluid typography, asymmetric grids, micro-interactions, and accessible UI around native WordPress data objects.
 
-#### 7.4.1 Never Hardcode Menus — Dynamic `wp_nav_menu()` with Submenus
+#### 7.4.1 Dynamic Product Category & Taxonomy Screens (`taxonomy-product_cat.php`)
+Every element on category/collection screens must pull dynamically from WordPress term metadata:
+- **Category Name**: `single_term_title('', false)` or `woocommerce_page_title(false)`
+- **Category Hero Image**: `get_term_meta($term->term_id, 'thumbnail_id', true)` -> `wp_get_attachment_image($thumb_id, 'full')` (wrapped in a luxury responsive container with dark/light overlay gradient scrim)
+- **Category Description**: `term_description()` (rendered with `wp_kses_post()`, preserving rich editorial text and links from `wp-admin > Products > Categories`)
+- **Dynamic Subcategory Pills / Sub-Collections**: Queried dynamically via `get_terms(['taxonomy' => 'product_cat', 'parent' => $term_id])` with child thumbnail, title, product count, and link
+- **Breadcrumbs**: `woocommerce_breadcrumb()` reflecting the actual taxonomy tree
+- **Product Loop**: Standard WooCommerce loop (`woocommerce_product_loop_start()`, `wc_get_template_part('content', 'product')`) respecting store sorting, pagination, and stock status
+
+#### 7.4.2 Never Hardcode Menus — Dynamic `wp_nav_menu()` with Submenus
 Navigation links must NEVER be hardcoded into PHP templates or assumed to be static. Users must be able to create, edit, reorder, nest, and link pages, categories, or custom URLs via **wp-admin > Appearance > Menus**:
 
 1. **Register Multiple Menu Locations (`functions.php`)**:
@@ -446,7 +458,7 @@ add_action('after_setup_theme', 'beeclue_register_nav_menus');
 4. **Mobile Navigation Drawer with Submenu Accordions (`assets/js/main.js`)**:
 Mobile menus dynamically inject accessible chevron toggle buttons (`aria-expanded="false"`) next to items with children so mobile visitors can drill into nested submenus smoothly without page reloads.
 
-#### 7.4.2 Native Blog & Content Publishing Engine
+#### 7.4.3 Native Blog & Content Publishing Engine
 A digital flagship is an editorial publication, not just a checkout funnel. The theme must support native WordPress blogging:
 - **`home.php` / `index.php`**: Blog index with editorial card grid, category filter tabs, and native `the_posts_pagination()`.
 - **`single.php`**: In-depth article layout with `the_post_thumbnail()`, author bio box, estimated reading time, `the_post_navigation()`, and native styled `comments_template()`.
@@ -607,6 +619,7 @@ wp menu location assign "Footer Company Menu" footer_2
 - [ ] Machine-readable Design Contract emitted and respected by all templates.
 - [ ] 5-layer CSS tokens declared in `style.css` without invalid syntax spacing (e.g., `2.5rem`, `150ms`).
 - [ ] Modular scaffolding used (`template-parts/header/`, `template-parts/product/`, `template-parts/post/`, `template-parts/cart/`, `template-parts/ui/`).
+- [ ] Pure UI Architecture enforced: Every data source originates dynamically from WordPress / WooCommerce Core (category name, hero image, description, subcategories, menus, posts, customizer); zero hardcoded content or mock data in templates.
 - [ ] Primary, mobile, and footer menus rendered dynamically via `wp_nav_menu()` with multi-level nested submenu support (NEVER hardcoded links).
 - [ ] Submenu dropdowns support accessible keyboard navigation (Esc to close, focus-within, aria-expanded).
 - [ ] Multiple menu locations registered (`primary`, `mobile`, `footer_1`, `footer_2`) granting user complete independence in `wp-admin > Appearance > Menus`.

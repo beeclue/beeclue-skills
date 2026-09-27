@@ -398,4 +398,281 @@ function beeclue_widgets_init() {
 add_action('widgets_init', 'beeclue_widgets_init');
 ```
 
+---
+
+## 6. Dynamic WordPress Data Architecture & Pure UI Separation
+
+> [!IMPORTANT]
+> **The Core Mandate**:
+> - **WordPress & WooCommerce Core = 100% of Data**: All taxonomy terms, category titles, category thumbnail images, editorial descriptions, subcategories, product attributes, prices, gallery images, menu trees, and customizer options must be managed natively in `wp-admin`. Templates must NEVER hardcode mock text, static images, or preset category lists.
+> - **Theme = 100% Pure UI, Layout & Interaction**: The theme's exclusive role is crafting high-fidelity layouts, 5-layer design token styling, fluid typography, responsive grids, micro-interactions, and accessible UI around native WordPress data objects.
+
+### 6.1 Product Category & Taxonomy Architecture (`taxonomy-product_cat.php` / `archive-product.php`)
+
+When a visitor navigates to a product category (e.g. `/product-category/tableware/ceramics/`), the theme dynamically extracts the category name, thumbnail image, description, and nested child terms directly from WordPress term meta:
+
+```php
+<?php
+/**
+ * Product Category & Taxonomy Archive Template
+ * Location: taxonomy-product_cat.php or woocommerce/archive-product.php
+ *
+ * SOURCING: 100% WordPress / WooCommerce Term Data
+ * STYLING:  100% Bespoke Theme UI & 5-Layer Design Tokens
+ */
+
+get_header('shop');
+
+$current_term   = get_queried_object();
+$term_id        = $current_term->term_id ?? 0;
+$term_name      = single_term_title('', false);
+$term_desc      = term_description();
+$thumbnail_id   = get_term_meta($term_id, 'thumbnail_id', true);
+$has_hero_image = !empty($thumbnail_id);
+
+// Query immediate subcategories/child terms dynamically
+$child_categories = get_terms([
+    'taxonomy'   => 'product_cat',
+    'parent'     => $term_id,
+    'hide_empty' => false,
+]);
+?>
+
+<main id="primary" class="site-main product-category-archive">
+
+    <!-- 1. PURE UI: Bespoke Category Hero Banner -->
+    <header class="category-hero <?php echo $has_hero_image ? 'has-bg-image' : 'has-solid-surface'; ?>">
+        <?php if ($has_hero_image) : ?>
+            <div class="category-hero-media">
+                <?php echo wp_get_attachment_image($thumbnail_id, 'full', false, [
+                    'class'   => 'category-hero-img',
+                    'loading' => 'eager',
+                    'alt'     => esc_attr($term_name),
+                ]); ?>
+                <div class="category-hero-overlay" aria-hidden="true"></div>
+            </div>
+        <?php endif; ?>
+
+        <div class="container category-hero-content">
+            <!-- Dynamic WordPress Breadcrumbs -->
+            <div class="category-breadcrumbs">
+                <?php woocommerce_breadcrumb([
+                    'delimiter'   => '<span class="crumb-separator" aria-hidden="true">/</span>',
+                    'wrap_before' => '<nav class="woocommerce-breadcrumb" aria-label="' . esc_attr__('Breadcrumb', 'beeclue') . '">',
+                    'wrap_after'  => '</nav>',
+                ]); ?>
+            </div>
+
+            <!-- Dynamic Category Name from WP Term -->
+            <h1 class="category-title"><?php echo esc_html($term_name); ?></h1>
+
+            <!-- Dynamic Category Description from WP Term (Supports rich text / Gutenberg) -->
+            <?php if (!empty($term_desc)) : ?>
+                <div class="category-description-card">
+                    <div class="category-description-text">
+                        <?php echo wp_kses_post($term_desc); ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- Dynamic Subcategories / Child Category Pills (If Any Exist) -->
+            <?php if (!empty($child_categories) && !is_wp_error($child_categories)) : ?>
+                <nav class="subcategory-pills" aria-label="<?php esc_attr_e('Subcategories', 'beeclue'); ?>">
+                    <span class="subcategory-label"><?php esc_html_e('Explore Sub-Collections:', 'beeclue'); ?></span>
+                    <ul class="subcategory-list">
+                        <?php foreach ($child_categories as $child_cat) :
+                            $child_link  = get_term_link($child_cat, 'product_cat');
+                            $child_thumb = get_term_meta($child_cat->term_id, 'thumbnail_id', true);
+                        ?>
+                            <li class="subcategory-pill-item">
+                                <a href="<?php echo esc_url($child_link); ?>" class="subcategory-pill-link">
+                                    <?php if ($child_thumb) : ?>
+                                        <?php echo wp_get_attachment_image($child_thumb, 'thumbnail', false, ['class' => 'subcategory-pill-thumb']); ?>
+                                    <?php endif; ?>
+                                    <span class="subcategory-pill-title"><?php echo esc_html($child_cat->name); ?></span>
+                                    <span class="subcategory-pill-count">(<?php echo esc_html($child_cat->count); ?>)</span>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+        </div>
+    </header>
+
+    <!-- 2. PURE UI: Catalog Filter & Sort Bar -->
+    <div class="catalog-toolbar-wrapper">
+        <div class="container catalog-toolbar">
+            <div class="catalog-toolbar-count">
+                <?php woocommerce_result_count(); ?>
+            </div>
+            <div class="catalog-toolbar-ordering">
+                <?php woocommerce_catalog_ordering(); ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Dynamic WooCommerce Product Loop -->
+    <div class="container product-grid-container">
+        <?php if (woocommerce_product_loop()) : ?>
+            <?php woocommerce_product_loop_start(); ?>
+                <?php while (have_posts()) : the_post(); ?>
+                    <?php wc_get_template_part('content', 'product'); ?>
+                <?php endwhile; ?>
+            <?php woocommerce_product_loop_end(); ?>
+
+            <!-- Dynamic Pagination -->
+            <div class="catalog-pagination">
+                <?php woocommerce_pagination(); ?>
+            </div>
+        <?php else : ?>
+            <?php do_action('woocommerce_no_products_found'); ?>
+        <?php endif; ?>
+    </div>
+
+</main>
+
+<?php get_footer('shop'); ?>
+```
+
+### 6.2 Bespoke Category Hero & Subcategory CSS (`style.css`)
+```css
+/* ─────────────────────────────────────────────────────────────
+   PRODUCT CATEGORY ARCHIVE: BESPOKE HERO & SUB-COLLECTION UI
+   ───────────────────────────────────────────────────────────── */
+.category-hero {
+    position: relative;
+    padding: clamp(3rem, 6vw, 6rem) 0;
+    background: var(--color-surface-base);
+    border-bottom: 1px solid var(--color-border-subtle);
+    overflow: hidden;
+}
+
+.category-hero.has-bg-image {
+    min-height: clamp(280px, 40vh, 480px);
+    display: flex;
+    align-items: center;
+    color: var(--color-surface-base);
+}
+
+.category-hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.category-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.category-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.25) 0%,
+        rgba(0, 0, 0, 0.70) 100%
+    );
+}
+
+.category-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 840px;
+}
+
+.category-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 0.5rem 0 1rem 0;
+    letter-spacing: -0.02em;
+}
+
+.category-description-card {
+    margin-top: 1rem;
+    font-size: clamp(0.938rem, 1.2vw, 1.063rem);
+    line-height: 1.6;
+    color: inherit;
+    opacity: 0.9;
+}
+
+/* Dynamic Subcategory Pills */
+.subcategory-pills {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.subcategory-label {
+    font-size: 0.813rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.subcategory-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.subcategory-pill-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-base);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-size: 0.813rem;
+    font-weight: 500;
+    transition: all var(--motion-duration-fast) ease;
+}
+
+.subcategory-pill-link:hover {
+    border-color: var(--color-action-primary);
+    color: var(--color-action-primary);
+    transform: translateY(-1px);
+}
+
+.subcategory-pill-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.subcategory-pill-count {
+    opacity: 0.6;
+    font-size: 0.75rem;
+}
+```
+
+### 6.3 Single Product Data Binding (`content-single-product.php`)
+Every element rendered on the single product page binds directly to WooCommerce object methods:
+- **Title**: `$product->get_name()`
+- **Pricing**: `$product->get_price_html()`
+- **SKU**: `$product->get_sku()`
+- **Stock Status**: `$product->get_stock_status()` and `$product->is_in_stock()`
+- **Gallery Images**: `$product->get_gallery_image_ids()`
+- **Short Description**: `$product->get_short_description()`
+- **Product Tabs**: `woocommerce_default_product_tabs()` (Description, Additional Information, Reviews)
+- **Upsells / Cross-sells**: `$product->get_upsell_ids()` and `$product->get_cross_sell_ids()`
+
+The theme wraps these standard methods with responsive gallery sliders, zoom overlays, pill swatches, and the floating sticky Add-to-Cart bar.
+
+
 
