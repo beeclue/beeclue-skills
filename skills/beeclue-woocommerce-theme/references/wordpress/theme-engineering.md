@@ -1330,6 +1330,411 @@ Third-party plugin forms (EmailOctopus `.email-octopus-form-wrapper` and Mailchi
 }
 ```
 
+---
+
+## 9. Multi-Style Checkout Architecture & Theming (`woocommerce/checkout/`)
+
+The checkout page adapts to 1 of 3 layout styles selected in **Appearance > Customize > Theme Settings > Checkout Experience**, plus an optional distraction-free enclosed chrome mode.
+
+### 9.1 Customizer Settings Registration (`inc/customizer.php`)
+```php
+// Add to beeclue_customize_register():
+$wp_customize->add_section('beeclue_checkout_section', [
+    'title'    => esc_html__('Checkout Experience & Layout', 'beeclue'),
+    'panel'    => 'beeclue_theme_settings_panel',
+    'priority' => 35,
+]);
+
+// Checkout Layout Style Selector (Split-Screen vs. Wizard vs. Accordion)
+$wp_customize->add_setting('beeclue_checkout_style', [
+    'default'           => 'split_single',
+    'sanitize_callback' => 'sanitize_key',
+]);
+$wp_customize->add_control('beeclue_checkout_style', [
+    'label'   => esc_html__('Checkout Layout Style', 'beeclue'),
+    'section' => 'beeclue_checkout_section',
+    'type'    => 'select',
+    'choices' => [
+        'split_single' => esc_html__('Split-Screen Single Page (Modern E-commerce Standard)', 'beeclue'),
+        'wizard'       => esc_html__('Multi-Step Wizard (3-Step with Progress Bar)', 'beeclue'),
+        'accordion'    => esc_html__('Progressive Accordion (Mobile-First Collapsible)', 'beeclue'),
+    ],
+]);
+
+// Distraction-Free Enclosed Header & Footer Toggle
+$wp_customize->add_setting('beeclue_checkout_distraction_free', [
+    'default'           => true,
+    'sanitize_callback' => 'beeclue_sanitize_checkbox',
+]);
+$wp_customize->add_control('beeclue_checkout_distraction_free', [
+    'label'       => esc_html__('Enable Distraction-Free Checkout Chrome', 'beeclue'),
+    'description' => esc_html__('Hides mega-menus, category links, and promotional footer columns to focus exclusively on checkout completion.', 'beeclue'),
+    'section'     => 'beeclue_checkout_section',
+    'type'        => 'checkbox',
+]);
+
+// Sticky Order Summary Toggle on Desktop
+$wp_customize->add_setting('beeclue_checkout_sticky_summary', [
+    'default'           => true,
+    'sanitize_callback' => 'beeclue_sanitize_checkbox',
+]);
+$wp_customize->add_control('beeclue_checkout_sticky_summary', [
+    'label'   => esc_html__('Sticky Order Summary on Desktop', 'beeclue'),
+    'section' => 'beeclue_checkout_section',
+    'type'    => 'checkbox',
+]);
+```
+
+### 9.2 Body Class Filter & Enclosed Header Selection (`functions.php`)
+```php
+function beeclue_checkout_body_classes($classes) {
+    if (is_checkout() && !is_order_received_page()) {
+        $style = get_theme_mod('beeclue_checkout_style', 'split_single');
+        $classes[] = 'checkout-layout-' . sanitize_html_class($style);
+
+        if (get_theme_mod('beeclue_checkout_distraction_free', true)) {
+            $classes[] = 'checkout-distraction-free';
+        }
+    }
+    return $classes;
+}
+add_filter('body_class', 'beeclue_checkout_body_classes');
+
+// Conditional Distraction-Free Header
+function beeclue_get_checkout_header() {
+    if (is_checkout() && !is_order_received_page() && get_theme_mod('beeclue_checkout_distraction_free', true)) {
+        get_template_part('template-parts/header/header-checkout');
+    } else {
+        get_header();
+    }
+}
+```
+
+### 9.3 Distraction-Free Header (`template-parts/header/header-checkout.php`)
+```php
+<?php
+/**
+ * Minimalist Enclosed Checkout Header
+ * Removes all navigation exit points while providing brand trust & security signals.
+ */
+?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
+
+<header class="checkout-minimal-header">
+    <div class="container checkout-header-inner">
+        <div class="checkout-brand">
+            <?php if (has_custom_logo()) : ?>
+                <?php the_custom_logo(); ?>
+            <?php else : ?>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="checkout-brand-title"><?php bloginfo('name'); ?></a>
+            <?php endif; ?>
+        </div>
+        <div class="checkout-trust-badge">
+            <span class="lock-icon" aria-hidden="true">🔒</span>
+            <span class="trust-text"><?php esc_html_e('256-Bit Encrypted Secure Checkout', 'beeclue'); ?></span>
+        </div>
+        <div class="checkout-back-link">
+            <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="return-cart-btn">
+                &larr; <?php esc_html_e('Return to Bag', 'beeclue'); ?>
+            </a>
+        </div>
+    </div>
+</header>
+```
+
+### 9.4 Template Implementation (`woocommerce/checkout/form-checkout.php`)
+```php
+<?php
+/**
+ * Adaptive Multi-Style Checkout Template
+ * Location: woocommerce/checkout/form-checkout.php
+ */
+
+if (!defined('ABSPATH')) exit;
+
+$checkout_style = get_theme_mod('beeclue_checkout_style', 'split_single');
+$sticky_summary = get_theme_mod('beeclue_checkout_sticky_summary', true);
+
+do_action('woocommerce_before_checkout_form', $checkout);
+
+if (!$checkout->is_registration_enabled() && $checkout->is_registration_required() && !is_user_logged_in()) {
+    echo esc_html(apply_filters('woocommerce_checkout_must_be_logged_in_message', __('You must be logged in to checkout.', 'woocommerce')));
+    return;
+}
+?>
+
+<!-- Multi-Step Wizard Progress Bar (Only rendered for 'wizard' style) -->
+<?php if ($checkout_style === 'wizard') : ?>
+    <nav class="checkout-wizard-nav" aria-label="<?php esc_attr_e('Checkout Steps', 'beeclue'); ?>">
+        <ol class="checkout-step-list">
+            <li class="checkout-step-item active" data-step="1" aria-current="step">
+                <span class="step-num">1</span>
+                <span class="step-label"><?php esc_html_e('Customer Information', 'beeclue'); ?></span>
+            </li>
+            <li class="checkout-step-item" data-step="2">
+                <span class="step-num">2</span>
+                <span class="step-label"><?php esc_html_e('Shipping & Delivery', 'beeclue'); ?></span>
+            </li>
+            <li class="checkout-step-item" data-step="3">
+                <span class="step-num">3</span>
+                <span class="step-label"><?php esc_html_e('Payment & Confirmation', 'beeclue'); ?></span>
+            </li>
+        </ol>
+    </nav>
+<?php endif; ?>
+
+<form name="checkout" method="post" class="checkout woocommerce-checkout checkout-style-<?php echo esc_attr($checkout_style); ?>" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data">
+
+    <div class="checkout-main-grid">
+
+        <!-- LEFT COLUMN: Customer Details, Shipping, & Payment -->
+        <div class="checkout-form-column">
+
+            <!-- STEP / SECTION 1: Customer Details -->
+            <section class="checkout-section checkout-step-panel step-1 active" data-step="1">
+                <header class="checkout-section-header">
+                    <h3 class="checkout-section-title">
+                        <span class="section-indicator">1</span>
+                        <?php esc_html_e('Contact Information', 'beeclue'); ?>
+                    </h3>
+                    <?php if ($checkout_style === 'accordion') : ?>
+                        <button type="button" class="btn-step-edit" aria-label="<?php esc_attr_e('Edit Contact Information', 'beeclue'); ?>"><?php esc_html_e('Edit', 'beeclue'); ?></button>
+                    <?php endif; ?>
+                </header>
+                <div class="checkout-section-body">
+                    <?php do_action('woocommerce_checkout_billing'); ?>
+                    <?php if ($checkout_style === 'wizard') : ?>
+                        <div class="wizard-actions">
+                            <button type="button" class="btn btn-primary wizard-next-btn" data-next="2">
+                                <?php esc_html_e('Continue to Shipping', 'beeclue'); ?> &rarr;
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+            <!-- STEP / SECTION 2: Shipping Method & Options -->
+            <section class="checkout-section checkout-step-panel step-2 <?php echo $checkout_style === 'split_single' ? 'active' : ''; ?>" data-step="2">
+                <header class="checkout-section-header">
+                    <h3 class="checkout-section-title">
+                        <span class="section-indicator">2</span>
+                        <?php esc_html_e('Delivery & Shipping', 'beeclue'); ?>
+                    </h3>
+                    <?php if ($checkout_style === 'accordion') : ?>
+                        <button type="button" class="btn-step-edit" aria-label="<?php esc_attr_e('Edit Shipping Details', 'beeclue'); ?>"><?php esc_html_e('Edit', 'beeclue'); ?></button>
+                    <?php endif; ?>
+                </header>
+                <div class="checkout-section-body">
+                    <?php do_action('woocommerce_checkout_shipping'); ?>
+                    <?php if ($checkout_style === 'wizard') : ?>
+                        <div class="wizard-actions">
+                            <button type="button" class="btn btn-secondary wizard-prev-btn" data-prev="1">
+                                &larr; <?php esc_html_e('Back to Details', 'beeclue'); ?>
+                            </button>
+                            <button type="button" class="btn btn-primary wizard-next-btn" data-next="3">
+                                <?php esc_html_e('Continue to Payment', 'beeclue'); ?> &rarr;
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+            <!-- STEP / SECTION 3: Payment Gateways & Terms -->
+            <section class="checkout-section checkout-step-panel step-3 <?php echo $checkout_style === 'split_single' ? 'active' : ''; ?>" data-step="3">
+                <header class="checkout-section-header">
+                    <h3 class="checkout-section-title">
+                        <span class="section-indicator">3</span>
+                        <?php esc_html_e('Payment Method', 'beeclue'); ?>
+                    </h3>
+                </header>
+                <div class="checkout-section-body">
+                    <div id="order_review" class="woocommerce-checkout-review-order">
+                        <?php woocommerce_checkout_payment(); ?>
+                    </div>
+                    <?php if ($checkout_style === 'wizard') : ?>
+                        <div class="wizard-actions">
+                            <button type="button" class="btn btn-secondary wizard-prev-btn" data-prev="2">
+                                &larr; <?php esc_html_e('Back to Shipping', 'beeclue'); ?>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Sticky Order Summary Card -->
+        <aside class="checkout-summary-column <?php echo $sticky_summary ? 'is-sticky-summary' : ''; ?>">
+            <div class="checkout-order-summary-card">
+                <h3 class="summary-card-title"><?php esc_html_e('Order Summary', 'beeclue'); ?></h3>
+                <div class="summary-card-items">
+                    <?php do_action('woocommerce_checkout_order_review'); ?>
+                </div>
+                <!-- Trust & Security Guarantees -->
+                <div class="checkout-security-guarantee">
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon" aria-hidden="true">🛡️</span>
+                        <span class="guarantee-text"><?php esc_html_e('Guaranteed Safe & Secure Checkout', 'beeclue'); ?></span>
+                    </div>
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon" aria-hidden="true">↺</span>
+                        <span class="guarantee-text"><?php esc_html_e('Complimentary 30-Day Returns', 'beeclue'); ?></span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+</form>
+
+<?php do_action('woocommerce_after_checkout_form', $checkout); ?>
+```
+
+### 9.5 Bespoke Checkout CSS Tokens (`style.css`)
+```css
+/* ─────────────────────────────────────────────────────────────
+   CHECKOUT EXPERIENCE: MULTI-STYLE ARCHITECTURE
+   ───────────────────────────────────────────────────────────── */
+.checkout-main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    margin: 2rem 0 4rem 0;
+}
+
+@media (min-width: 1024px) {
+    .checkout-main-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+        align-items: start;
+    }
+    .is-sticky-summary {
+        position: sticky;
+        top: 2rem;
+        z-index: 10;
+    }
+}
+
+/* Minimalist Enclosed Checkout Header */
+.checkout-minimal-header {
+    padding: 1.5rem 0;
+    background: var(--color-surface-base);
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.checkout-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkout-trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.813rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+/* Multi-Step Wizard Progress Bar */
+.checkout-wizard-nav {
+    margin: 2rem 0;
+}
+
+.checkout-step-list {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+.checkout-step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    transition: all var(--motion-duration-fast) ease;
+}
+
+.checkout-step-item.active {
+    color: var(--color-text-primary);
+    font-weight: 600;
+    opacity: 1;
+}
+
+.checkout-step-item .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    font-size: 0.75rem;
+}
+
+.checkout-step-item.active .step-num {
+    background: var(--color-action-primary);
+    border-color: var(--color-action-primary);
+    color: var(--color-surface-base);
+}
+
+/* Wizard Screen Transitions */
+.checkout-style-wizard .checkout-step-panel {
+    display: none;
+}
+
+.checkout-style-wizard .checkout-step-panel.active {
+    display: block;
+    animation: fadeInStep var(--motion-duration-fast) ease;
+}
+
+@keyframes fadeInStep {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Order Summary Card Elevation */
+.checkout-order-summary-card {
+    background: var(--color-surface-base);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+    padding: 1.75rem;
+}
+
+.checkout-security-guarantee {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.guarantee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.813rem;
+    color: var(--color-text-secondary);
+}
+```
+
+
 
 
 

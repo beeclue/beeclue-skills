@@ -480,6 +480,14 @@ A digital flagship relies on direct-to-consumer email audience growth. The foote
 - **Customizer Controls**: Controlled via `beeclue_footer_show_newsletter` (toggle), `beeclue_newsletter_provider` (`email_octopus`, `mailchimp`, `custom`), `beeclue_newsletter_shortcode`, `beeclue_newsletter_heading`, and `beeclue_newsletter_subheading`.
 - **Plugin Harmonization**: Seamlessly styles plugin shortcode outputs (`[email-octopus-form]` or `[mc4wp_form]`) with 5-layer design tokens (`--color-surface-base`, `--color-border-subtle`, `--color-action-primary`), fluid typography, accessible labels, loading spinners, and WCAG AA contrast states so external plugin forms match the store's luxury design language.
 
+### 7.7 Selectable Multi-Style Checkout Architecture (`woocommerce/checkout/form-checkout.php`)
+Stores can choose their checkout experience in **Appearance > Customize > Theme Settings > Checkout Experience**:
+- **3 Proven Checkout Styles (`beeclue_checkout_style`)**:
+  1. `split_single`: Modern 2-column split-screen layout (`58% / 42%`) with forms on the left and a sticky elevated order summary on the right (Shopify/luxury standard).
+  2. `wizard`: 3-step progressive wizard with visual breadcrumb progress indicators (`Step 1: Info` → `Step 2: Shipping` → `Step 3: Payment`) preventing cognitive overload for high AOV purchases.
+  3. `accordion`: Progressive collapsible cards where completed steps collapse into compact verified summaries with `[Edit]` buttons, eliminating mobile scroll fatigue.
+- **Distraction-Free Enclosed Mode (`beeclue_checkout_distraction_free`)**: Strips out header navigation links, search, and marketing footer columns on the checkout page, replacing them with a secure 256-bit SSL trust badge and direct support hotline to eliminate exit drop-offs.
+
 ---
 
 ## 8. HIGH-CONVERTING E-COMMERCE ENGINEERING
@@ -648,6 +656,7 @@ wp menu location assign "Footer Company Menu" footer_2
 - [ ] Assistive technologies alerted via `aria-live="polite"` region.
 - [ ] Complete JSON-LD SEO structured data rendered in `wp_head`.
 - [ ] Footer newsletter integration: Supports EmailOctopus or Mailchimp plugin with customizer toggles (`beeclue_footer_show_newsletter`, `beeclue_newsletter_provider`) and bespoke theme token styling.
+- [ ] Multi-style checkout architecture: Supports selectable layout styles (split-screen, wizard, accordion) and distraction-free enclosed chrome via Customizer (`beeclue_checkout_style`, `beeclue_checkout_distraction_free`) with WCAG AA step semantics.
 - [ ] Mandatory Beeclue Tech attribution link in footer with UTM parameters.
 - [ ] Anti-Generic Design Linter passed (zero AI design clichés).
 - [ ] Design Critic score $\ge 90$ achieved.

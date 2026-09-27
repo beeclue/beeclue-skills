@@ -35,7 +35,8 @@ The architecture enforces a strict divide: **WordPress / WooCommerce Core is the
 | **Theme Settings & UI Toggles (`inc/customizer.php`)** | `wp-admin > Appearance > Customize`: `get_theme_mod('beeclue_catalog_show_rating')`, `get_theme_mod('beeclue_single_show_reviews')`, etc. | Granular control to toggle UI components (e.g. disable reviews on grid while showing on details, toggle sticky bar, swatches, shipping bar). |
 | **Footer Newsletter Module** | EmailOctopus or Mailchimp Plugins / Webhooks (`wp-admin > Settings` or Customizer) | List synchronization, double opt-in, API security. Theme provides 100% bespoke token styling, fluid input layouts, and Customizer visibility toggles. |
 | **Site Chrome & Identity** | `wp-admin > Appearance > Customize`: `get_custom_logo()`, `get_bloginfo('name')`, `get_theme_mod('announcement_text')`. | Header positioning, responsive mobile drawer triggers, announcement ticker layout, sticky header blur effects. |
-| **Cart Drawer & Checkout** | `WC()->cart`: Items, quantities, prices, cart subtotal, free shipping threshold calculation. | Off-canvas drawer sliding animation, progress bar fill calculation, focus trapping, swipe-to-dismiss gestures. |
+| **Cart Drawer (`drawer.php`)** | `WC()->cart`: Items, quantities, prices, cart subtotal, free shipping threshold calculation. | Off-canvas drawer sliding animation, progress bar fill calculation, focus trapping, swipe-to-dismiss gestures. |
+| **Checkout Experience (`form-checkout.php`)** | WooCommerce Checkout API (`WC()->checkout`): Customer billing/shipping, gateways, orders. | 3 selectable layout styles (`split_single`, `wizard`, `accordion`) via Customizer, distraction-free enclosed chrome header/footer, sticky order summary card. |
 | **Custom Post Types** | Must-Use Plugin (`wp-content/mu-plugins/`): CPT registration and custom taxonomy definitions. | Bespoke portfolio/showroom archive and single card template parts (`template-parts/cpt/`). |
 
 ---
