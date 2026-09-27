@@ -136,10 +136,19 @@ function beeclue_nav_fallback() {
 }
 ```
 
-### 4.4 Submenu Dropdown CSS & Accessible Interaction (`style.css`)
-WordPress automatically appends `.menu-item-has-children` to parent items and wraps nested lists in `.sub-menu`:
+### 4.4 Bespoke Custom Styling for Submenus & Sub-Submenus (`style.css`)
+
+> [!IMPORTANT]
+> **Data Source vs. Styling Separation**:
+> - **Source of Truth**: 100% WordPress Core (`wp_nav_menu()` populated by the client in `wp-admin > Appearance > Menus`). Users can add, delete, rename, reorder, and nest menu items at will.
+> - **Styling & Interaction**: 100% Bespoke Custom CSS & JS. WordPress outputs standard semantic HTML (`<ul>`, `<li>`, `.sub-menu`). The theme styles all tiers (Top Level, Level 1 Submenu, Level 2 Sub-Submenu Flyout, and Mobile Drawer Accordions) using the 5-layer design tokens.
+
+WordPress automatically attaches `.menu-item-has-children` to any item with children and renders child items inside `<ul class="sub-menu">`. The custom CSS handles all tiers with luxury elevation, micro-interactions, and accessible keyboard navigation:
+
 ```css
-/* Top-level menu */
+/* ─────────────────────────────────────────────────────────────
+   TIER 0: TOP-LEVEL NAVIGATION BAR
+   ───────────────────────────────────────────────────────────── */
 .nav-menu-primary {
     display: flex;
     align-items: center;
@@ -153,20 +162,44 @@ WordPress automatically appends `.menu-item-has-children` to parent items and wr
     position: relative;
 }
 
-.nav-menu-primary a {
+.nav-menu-primary > li > a {
     color: var(--color-text-primary);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.938rem;
+    letter-spacing: -0.01em;
+    padding: 0.75rem 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     transition: color var(--motion-duration-fast) ease;
 }
 
-/* Multi-level nested dropdowns */
+/* Custom Chevron Indicator on Top-Level Parents */
+.nav-menu-primary > li.menu-item-has-children > a::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform var(--motion-duration-fast) ease;
+}
+
+.nav-menu-primary > li.menu-item-has-children:hover > a::after,
+.nav-menu-primary > li.menu-item-has-children:focus-within > a::after {
+    transform: rotate(225deg) translateY(-2px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TIER 1: SUBMENU (LEVEL 1 DROPDOWN)
+   ───────────────────────────────────────────────────────────── */
 .nav-menu-primary .sub-menu {
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 220px;
+    min-width: 230px;
     background: var(--color-surface-base);
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-sm);
@@ -183,14 +216,52 @@ WordPress automatically appends `.menu-item-has-children` to parent items and wr
     z-index: 100;
 }
 
-/* Deep nested submenus (Level 2+) */
-.nav-menu-primary .sub-menu .sub-menu {
-    top: 0;
-    left: 100%;
-    margin: 0 0 0 0.25rem;
+.nav-menu-primary .sub-menu li {
+    position: relative;
+    padding: 0;
+    margin: 0;
 }
 
-/* Accessible reveal on :hover AND :focus-within */
+.nav-menu-primary .sub-menu a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: all var(--motion-duration-fast) ease;
+}
+
+.nav-menu-primary .sub-menu a:hover,
+.nav-menu-primary .sub-menu a:focus {
+    color: var(--color-action-primary);
+    background: var(--color-surface-sunken);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TIER 2: SUB-SUBMENU (LEVEL 2 TERTIARY FLYOUT)
+   ───────────────────────────────────────────────────────────── */
+.nav-menu-primary .sub-menu .sub-menu {
+    top: -0.5rem;
+    left: 100%;
+    margin: 0 0 0 0.35rem;
+    box-shadow: var(--shadow-drawer);
+}
+
+/* Custom Horizontal Flyout Arrow for Submenu Parents */
+.nav-menu-primary .sub-menu li.menu-item-has-children > a::after {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid currentColor;
+    border-top: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: auto;
+}
+
+/* Accessible reveal on :hover AND :focus-within across all tiers */
 .nav-menu-primary li:hover > .sub-menu,
 .nav-menu-primary li:focus-within > .sub-menu {
     opacity: 1;
@@ -198,22 +269,11 @@ WordPress automatically appends `.menu-item-has-children` to parent items and wr
     transform: translateY(0);
 }
 
-.nav-menu-primary .sub-menu li {
-    position: relative;
-    padding: 0;
-}
-
-.nav-menu-primary .sub-menu a {
-    display: block;
-    padding: 0.5rem 1.25rem;
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-}
-
-.nav-menu-primary .sub-menu a:hover,
-.nav-menu-primary .sub-menu a:focus {
-    color: var(--color-action-primary);
-    background: var(--color-surface-sunken);
+/* Reverse flyout if nearing right viewport edge */
+.nav-menu-primary li.flyout-left > .sub-menu {
+    left: auto;
+    right: 100%;
+    margin: 0 0.35rem 0 0;
 }
 ```
 

@@ -401,47 +401,50 @@ add_action('after_setup_theme', 'beeclue_register_nav_menus');
 </nav>
 ```
 
-3. **Multi-Level Dropdown Styling & Accessible Focus Trap (`style.css`)**:
-Handle `.menu-item-has-children` and `.sub-menu` natively. Dropdowns must reveal on both `:hover` AND `:focus-within` for full WCAG keyboard compliance:
+3. **Bespoke Custom Styling for Submenus & Sub-Submenus (`style.css`)**:
+> [!IMPORTANT]
+> **Source from WordPress, Style with Bespoke Custom CSS**:
+> The menu structure (including Tier 1 submenus and Tier 2 sub-submenus) is **100% dynamically sourced from WordPress** (`wp-admin > Appearance > Menus`), giving the store owner total independence. However, the visual appearance, typography, drop shadows, chevron indicators, and multi-tier flyout mechanics are **100% bespoke custom theme CSS**:
+
 ```css
-.nav-menu-primary {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+/* Tier 0: Top-level menu items */
+.nav-menu-primary { display: flex; align-items: center; gap: 2rem; list-style: none; margin: 0; padding: 0; }
 .nav-menu-primary > li { position: relative; }
-.nav-menu-primary .sub-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 220px;
-    background: var(--color-surface-base);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-card);
-    list-style: none;
-    padding: 0.5rem 0;
-    margin: 0.5rem 0 0 0;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-    transition: all var(--motion-duration-fast) ease;
-    z-index: 100;
+.nav-menu-primary > li.menu-item-has-children > a::after {
+    content: ''; display: inline-block; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translateY(-2px); transition: transform var(--motion-duration-fast) ease;
 }
-.nav-menu-primary .sub-menu .sub-menu { top: 0; left: 100%; margin: 0 0 0 0.25rem; }
+.nav-menu-primary > li.menu-item-has-children:hover > a::after { transform: rotate(225deg) translateY(-2px); }
+
+/* Tier 1: Submenu dropdown */
+.nav-menu-primary .sub-menu {
+    position: absolute; top: 100%; left: 0; min-width: 230px;
+    background: var(--color-surface-base); border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-sm); box-shadow: var(--shadow-card);
+    list-style: none; padding: 0.5rem 0; margin: 0.5rem 0 0 0;
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: all var(--motion-duration-fast) ease; z-index: 100;
+}
+
+/* Tier 2: Sub-submenu tertiary flyout */
+.nav-menu-primary .sub-menu .sub-menu {
+    top: -0.5rem; left: 100%; margin: 0 0 0 0.35rem;
+    box-shadow: var(--shadow-drawer);
+}
+.nav-menu-primary .sub-menu li.menu-item-has-children > a::after {
+    content: '›'; font-size: 1rem; line-height: 1; margin-left: auto;
+}
+
+/* Accessible reveal on :hover AND :focus-within */
 .nav-menu-primary li:hover > .sub-menu,
 .nav-menu-primary li:focus-within > .sub-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+    opacity: 1; visibility: visible; transform: translateY(0);
 }
 ```
 
 4. **Mobile Navigation Drawer with Submenu Accordions (`assets/js/main.js`)**:
-Mobile menus dynamically inject accessible chevron toggle buttons (`aria-expanded="false"`) next to items with children so mobile visitors can drill into submenus smoothly.
+Mobile menus dynamically inject accessible chevron toggle buttons (`aria-expanded="false"`) next to items with children so mobile visitors can drill into nested submenus smoothly without page reloads.
 
 #### 7.4.2 Native Blog & Content Publishing Engine
 A digital flagship is an editorial publication, not just a checkout funnel. The theme must support native WordPress blogging:
