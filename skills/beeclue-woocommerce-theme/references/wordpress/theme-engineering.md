@@ -979,6 +979,358 @@ endif;
 <?php endif; ?>
 ```
 
+---
+
+## 8. Footer Architecture & Newsletter Integration (EmailOctopus & Mailchimp)
+
+A digital flagship store relies heavily on direct-to-consumer email audience building. The footer must support email subscription powered by either **EmailOctopus** or **Mailchimp** (via plugins or direct shortcodes), styled with 100% bespoke theme UI so the form seamlessly blends with the brand aesthetic.
+
+### 8.1 Footer Template Structure (`footer.php`)
+```php
+<?php
+/**
+ * Theme Footer Template
+ * Location: footer.php
+ */
+?>
+<footer id="colophon" class="site-footer">
+    <div class="container footer-primary-grid">
+        <!-- Col 1: Brand & Bio -->
+        <div class="footer-col footer-col-brand">
+            <?php if (has_custom_logo()) : ?>
+                <div class="footer-logo"><?php the_custom_logo(); ?></div>
+            <?php else : ?>
+                <span class="footer-site-title"><?php bloginfo('name'); ?></span>
+            <?php endif; ?>
+            <p class="footer-tagline"><?php bloginfo('description'); ?></p>
+        </div>
+
+        <!-- Col 2: Dynamic Footer Menu 1 (Catalog) -->
+        <div class="footer-col footer-col-menu">
+            <h4 class="footer-heading"><?php esc_html_e('Explore', 'beeclue'); ?></h4>
+            <?php
+            wp_nav_menu([
+                'theme_location' => 'footer_1',
+                'container'      => false,
+                'menu_class'     => 'footer-menu-links',
+                'depth'          => 1,
+                'fallback_cb'    => false,
+            ]);
+            ?>
+        </div>
+
+        <!-- Col 3: Dynamic Footer Menu 2 (Company / Editorial) -->
+        <div class="footer-col footer-col-menu">
+            <h4 class="footer-heading"><?php esc_html_e('Company', 'beeclue'); ?></h4>
+            <?php
+            wp_nav_menu([
+                'theme_location' => 'footer_2',
+                'container'      => false,
+                'menu_class'     => 'footer-menu-links',
+                'depth'          => 1,
+                'fallback_cb'    => false,
+            ]);
+            ?>
+        </div>
+
+        <!-- Col 4: Dynamic Newsletter Module (EmailOctopus / Mailchimp) -->
+        <?php if (get_theme_mod('beeclue_footer_show_newsletter', true)) : ?>
+            <div class="footer-col footer-col-newsletter">
+                <?php get_template_part('template-parts/footer/newsletter'); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Bottom Bar: Legal & Mandatory Beeclue Tech Attribution -->
+    <div class="container footer-bottom-bar">
+        <p class="copyright-text">
+            &copy; <?php echo esc_html(gmdate('Y')); ?> <?php bloginfo('name'); ?>. <?php esc_html_e('All rights reserved.', 'beeclue'); ?>
+        </p>
+        <span class="beeclue-attribution">
+            Website Designed &amp; Developed by
+            <a href="https://beeclue.com/?utm_source=client_site&amp;utm_medium=footer&amp;utm_campaign=web_design"
+               target="_blank" rel="noopener noreferrer">Beeclue Tech</a>
+        </span>
+    </div>
+</footer>
+<?php wp_footer(); ?>
+</body>
+</html>
+```
+
+### 8.2 Newsletter Template Part (`template-parts/footer/newsletter.php`)
+Supports EmailOctopus shortcode/form, Mailchimp (MC4WP) shortcode/form, or a custom form action:
+
+```php
+<?php
+/**
+ * Footer Newsletter Signup Template Part
+ * Location: template-parts/footer/newsletter.php
+ *
+ * Supports: EmailOctopus or Mailchimp plugin integration
+ */
+
+$heading    = get_theme_mod('beeclue_newsletter_heading', __('Join the Gazette', 'beeclue'));
+$subheading = get_theme_mod('beeclue_newsletter_subheading', __('Private previews, editorial dispatches, and curated releases.', 'beeclue'));
+$provider   = get_theme_mod('beeclue_newsletter_provider', 'email_octopus');
+$shortcode  = get_theme_mod('beeclue_newsletter_shortcode', '');
+$action_url = get_theme_mod('beeclue_newsletter_action_url', '');
+?>
+
+<div class="newsletter-module" id="footer-newsletter">
+    <?php if (!empty($heading)) : ?>
+        <h4 class="newsletter-heading"><?php echo esc_html($heading); ?></h4>
+    <?php endif; ?>
+
+    <?php if (!empty($subheading)) : ?>
+        <p class="newsletter-subheading"><?php echo esc_html($subheading); ?></p>
+    <?php endif; ?>
+
+    <div class="newsletter-form-container">
+        <?php
+        // 1. Dedicated Shortcode (EmailOctopus plugin or Mailchimp for WP)
+        if (!empty($shortcode)) :
+            echo do_shortcode($shortcode);
+
+        // 2. EmailOctopus Plugin Auto-Detection
+        elseif ($provider === 'email_octopus' && shortcode_exists('email-octopus-form')) :
+            echo do_shortcode('[email-octopus-form]');
+
+        // 3. Mailchimp (MC4WP) Plugin Auto-Detection
+        elseif ($provider === 'mailchimp' && shortcode_exists('mc4wp_form')) :
+            echo do_shortcode('[mc4wp_form]');
+
+        // 4. Bespoke Native HTML Form (Fallback to Direct Provider Action URL or Theme AJAX)
+        else : ?>
+            <form action="<?php echo esc_url($action_url ?: admin_url('admin-ajax.php')); ?>"
+                  method="post"
+                  class="beeclue-newsletter-form"
+                  aria-label="<?php esc_attr_e('Newsletter Signup', 'beeclue'); ?>">
+
+                <?php if (empty($action_url)) : ?>
+                    <input type="hidden" name="action" value="beeclue_subscribe_newsletter">
+                    <?php wp_nonce_field('beeclue_newsletter_nonce', 'nonce'); ?>
+                <?php endif; ?>
+
+                <div class="newsletter-input-group">
+                    <label for="newsletter-email" class="screen-reader-text"><?php esc_html_e('Email Address', 'beeclue'); ?></label>
+                    <input type="email"
+                           id="newsletter-email"
+                           name="EMAIL"
+                           class="newsletter-input"
+                           placeholder="<?php esc_attr_e('Enter your email address', 'beeclue'); ?>"
+                           required
+                           autocomplete="email">
+                    <button type="submit" class="newsletter-submit-btn" aria-label="<?php esc_attr_e('Subscribe', 'beeclue'); ?>">
+                        <span class="btn-text"><?php esc_html_e('Subscribe', 'beeclue'); ?></span>
+                        <span class="btn-icon" aria-hidden="true">&rarr;</span>
+                    </button>
+                </div>
+                <p class="newsletter-privacy-notice">
+                    <?php esc_html_e('We respect your privacy. Unsubscribe at any time.', 'beeclue'); ?>
+                </p>
+                <div class="newsletter-feedback" role="alert" aria-live="polite"></div>
+            </form>
+        <?php endif; ?>
+    </div>
+</div>
+```
+
+### 8.3 Customizer Controls for Newsletter (`inc/customizer.php`)
+```php
+// Add to beeclue_customize_register():
+$wp_customize->add_section('beeclue_newsletter_section', [
+    'title' => esc_html__('Footer Newsletter Integration', 'beeclue'),
+    'panel' => 'beeclue_theme_settings_panel',
+]);
+
+// Enable / Disable Newsletter in Footer
+$wp_customize->add_setting('beeclue_footer_show_newsletter', [
+    'default'           => true,
+    'sanitize_callback' => 'beeclue_sanitize_checkbox',
+]);
+$wp_customize->add_control('beeclue_footer_show_newsletter', [
+    'label'   => esc_html__('Enable Newsletter in Footer', 'beeclue'),
+    'section' => 'beeclue_newsletter_section',
+    'type'    => 'checkbox',
+]);
+
+// Provider Selection (EmailOctopus vs. Mailchimp vs. Custom Shortcode)
+$wp_customize->add_setting('beeclue_newsletter_provider', [
+    'default'           => 'email_octopus',
+    'sanitize_callback' => 'sanitize_key',
+]);
+$wp_customize->add_control('beeclue_newsletter_provider', [
+    'label'   => esc_html__('Newsletter Platform Provider', 'beeclue'),
+    'section' => 'beeclue_newsletter_section',
+    'type'    => 'select',
+    'choices' => [
+        'email_octopus' => esc_html__('EmailOctopus (Plugin or Shortcode)', 'beeclue'),
+        'mailchimp'     => esc_html__('Mailchimp for WordPress (MC4WP)', 'beeclue'),
+        'custom'        => esc_html__('Custom Shortcode or Embed', 'beeclue'),
+    ],
+]);
+
+// Shortcode Override (e.g., [email-octopus-form id="..."] or [mc4wp_form])
+$wp_customize->add_setting('beeclue_newsletter_shortcode', [
+    'default'           => '',
+    'sanitize_callback' => 'sanitize_text_field',
+]);
+$wp_customize->add_control('beeclue_newsletter_shortcode', [
+    'label'       => esc_html__('Plugin Form Shortcode', 'beeclue'),
+    'description' => esc_html__('Paste your EmailOctopus or Mailchimp form shortcode here to render directly.', 'beeclue'),
+    'section'     => 'beeclue_newsletter_section',
+    'type'        => 'text',
+]);
+
+// Editorial Heading & Subheading
+$wp_customize->add_setting('beeclue_newsletter_heading', [
+    'default'           => esc_html__('Join the Gazette', 'beeclue'),
+    'sanitize_callback' => 'sanitize_text_field',
+]);
+$wp_customize->add_control('beeclue_newsletter_heading', [
+    'label'   => esc_html__('Newsletter Title', 'beeclue'),
+    'section' => 'beeclue_newsletter_section',
+    'type'    => 'text',
+]);
+
+$wp_customize->add_setting('beeclue_newsletter_subheading', [
+    'default'           => esc_html__('Private previews, editorial dispatches, and curated releases.', 'beeclue'),
+    'sanitize_callback' => 'sanitize_textarea_field',
+]);
+$wp_customize->add_control('beeclue_newsletter_subheading', [
+    'label'   => esc_html__('Newsletter Description', 'beeclue'),
+    'section' => 'beeclue_newsletter_section',
+    'type'    => 'textarea',
+]);
+```
+
+### 8.4 Bespoke Styling for EmailOctopus & Mailchimp (`style.css`)
+Third-party plugin forms (EmailOctopus `.email-octopus-form-wrapper` and Mailchimp `.mc4wp-form`) inherit the theme's design tokens and fluid typography:
+
+```css
+/* ─────────────────────────────────────────────────────────────
+   FOOTER NEWSLETTER: EMAILOCTOPUS & MAILCHIMP HARMONIZATION
+   ───────────────────────────────────────────────────────────── */
+.footer-col-newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.newsletter-heading {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.newsletter-subheading {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* Universal Form Styling (Works across Native, EmailOctopus, and MC4WP) */
+.beeclue-newsletter-form,
+.email-octopus-form-wrapper form,
+.mc4wp-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.newsletter-input-group,
+.mc4wp-form-fields,
+.email-octopus-form-row {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-base);
+    overflow: hidden;
+    transition: border-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease;
+}
+
+.newsletter-input-group:focus-within,
+.mc4wp-form-fields:focus-within,
+.email-octopus-form-row:focus-within {
+    border-color: var(--color-action-primary);
+    box-shadow: 0 0 0 2px rgba(200, 96, 42, 0.15);
+}
+
+.newsletter-input,
+.mc4wp-form input[type="email"],
+.email-octopus-form-wrapper input[type="email"] {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    outline: none;
+    min-width: 0;
+}
+
+.newsletter-submit-btn,
+.mc4wp-form input[type="submit"],
+.mc4wp-form button[type="submit"],
+.email-octopus-form-wrapper button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    background: var(--color-text-primary);
+    color: var(--color-surface-base);
+    padding: 0 1.25rem;
+    font-size: 0.813rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background var(--motion-duration-fast) ease, transform var(--motion-duration-fast) ease;
+}
+
+.newsletter-submit-btn:hover,
+.mc4wp-form button[type="submit"]:hover,
+.email-octopus-form-wrapper button[type="submit"]:hover {
+    background: var(--color-action-primary);
+}
+
+.newsletter-privacy-notice {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* EmailOctopus & Mailchimp Alert & Feedback Styling */
+.email-octopus-success-message,
+.mc4wp-alert-success {
+    padding: 0.75rem 1rem;
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: var(--radius-sm);
+    font-size: 0.813rem;
+}
+
+.email-octopus-error-message,
+.mc4wp-alert-error {
+    padding: 0.75rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-sm);
+    font-size: 0.813rem;
+}
+```
+
+
 
 
 

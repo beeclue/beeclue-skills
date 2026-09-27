@@ -475,6 +475,11 @@ Every visual UI component across catalog grids, single products, cart drawers, a
   - **Header & Navigation (`header.php`)**: top announcement ticker bar (`beeclue_header_show_announcement`), search modal trigger (`beeclue_header_show_search`).
   - **Blog Articles (`single.php`)**: author biography card (`beeclue_blog_show_author`), estimated reading time (`beeclue_blog_show_reading_time`).
 
+### 7.6 Footer Architecture & Newsletter Integration (EmailOctopus & Mailchimp)
+A digital flagship relies on direct-to-consumer email audience growth. The footer must support email subscription powered by either **EmailOctopus** or **Mailchimp** (via official plugins, shortcodes, or custom action URLs), seamlessly styled with 100% bespoke theme UI:
+- **Customizer Controls**: Controlled via `beeclue_footer_show_newsletter` (toggle), `beeclue_newsletter_provider` (`email_octopus`, `mailchimp`, `custom`), `beeclue_newsletter_shortcode`, `beeclue_newsletter_heading`, and `beeclue_newsletter_subheading`.
+- **Plugin Harmonization**: Seamlessly styles plugin shortcode outputs (`[email-octopus-form]` or `[mc4wp_form]`) with 5-layer design tokens (`--color-surface-base`, `--color-border-subtle`, `--color-action-primary`), fluid typography, accessible labels, loading spinners, and WCAG AA contrast states so external plugin forms match the store's luxury design language.
+
 ---
 
 ## 8. HIGH-CONVERTING E-COMMERCE ENGINEERING
@@ -642,6 +647,7 @@ wp menu location assign "Footer Company Menu" footer_2
 - [ ] Keyboard focus trapped in modal overlays and dismissed via `Escape` key.
 - [ ] Assistive technologies alerted via `aria-live="polite"` region.
 - [ ] Complete JSON-LD SEO structured data rendered in `wp_head`.
+- [ ] Footer newsletter integration: Supports EmailOctopus or Mailchimp plugin with customizer toggles (`beeclue_footer_show_newsletter`, `beeclue_newsletter_provider`) and bespoke theme token styling.
 - [ ] Mandatory Beeclue Tech attribution link in footer with UTM parameters.
 - [ ] Anti-Generic Design Linter passed (zero AI design clichés).
 - [ ] Design Critic score $\ge 90$ achieved.
