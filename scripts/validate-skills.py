@@ -310,6 +310,63 @@ def validate_shopify_theme():
     print(f"  ✓ Verified {checked} internal reference links in SKILL.md.")
 
 
+def validate_funnel_audit():
+    print("\n-------------------------------------------------------------")
+    print("Validating skill: beeclue-funnel-audit")
+    print("-------------------------------------------------------------")
+    skill_dir = os.path.join(SKILLS_ROOT, "beeclue-funnel-audit")
+    skill_md = os.path.join(skill_dir, "SKILL.md")
+    references_dir = os.path.join(skill_dir, "references")
+
+    # 1. Frontmatter
+    print("[TEST 1/4] Validating SKILL.md frontmatter...")
+    assert os.path.exists(skill_md), f"SKILL.md missing at {skill_md}"
+    with open(skill_md, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    assert content.startswith("---"), "SKILL.md must start with YAML frontmatter delimiter '---'"
+    parts = content.split("---", 2)
+    assert len(parts) >= 3, "Invalid frontmatter structure"
+    frontmatter = parts[1]
+    assert "name: beeclue-funnel-audit" in frontmatter, "Missing name: beeclue-funnel-audit"
+    assert "description:" in frontmatter, "Missing description in frontmatter"
+    assert "audit" in frontmatter.lower(), "Missing core trigger phrase in frontmatter"
+    print("  ✓ SKILL.md frontmatter is valid.")
+
+    # 2. Reference files
+    print("[TEST 2/4] Validating modular references hierarchy...")
+    expected_files = [
+        "frameworks/conversion-heuristics.md",
+        "playbooks/business-archetypes.md",
+        "templates/audit-report-template.md",
+        "scripts/codebase-recon.md"
+    ]
+    for rel_path in expected_files:
+        full_path = os.path.join(references_dir, rel_path)
+        assert os.path.isfile(full_path), f"Missing expected reference file: {rel_path}"
+        size = os.path.getsize(full_path)
+        assert size > 200, f"File {rel_path} appears empty or truncated ({size} bytes)"
+    print(f"  ✓ All {len(expected_files)} modular reference files exist and are populated.")
+
+    # 3. Relative markdown links
+    print("[TEST 3/4] Auditing relative markdown links in SKILL.md...")
+    links = re.findall(r'references/([a-zA-Z0-9_\-/\.]+)', content)
+    checked = 0
+    for link in links:
+        clean_link = link.rstrip(").,")
+        target = os.path.join(references_dir, clean_link)
+        assert os.path.exists(target), f"Broken reference link in SKILL.md: references/{clean_link}"
+        checked += 1
+    print(f"  ✓ Verified {checked} internal reference links in SKILL.md.")
+
+    # 4. Critical rules check
+    print("[TEST 4/4] Verifying strict code freeze & approval protocol...")
+    assert "DO NOT modify, edit, create, or delete any application code during the audit phase." in content
+    assert "Wait for my approval" in content
+    assert "Funnel Health Index (FHI)" in content
+    print("  ✓ Strict code freeze, approval protocol, and 100-point FHI verified.")
+
+
 def main():
     print("═══════════════════════════════════════════════════════════════")
     print("Beeclue Skills — Automated Verification Suite")
@@ -318,6 +375,7 @@ def main():
         validate_woocommerce_theme()
         validate_next_theme()
         validate_shopify_theme()
+        validate_funnel_audit()
         print("\n═══════════════════════════════════════════════════════════════")
         print("ALL TESTS PASSED: All Beeclue Skills are Certified!")
         print("═══════════════════════════════════════════════════════════════")
